@@ -23,7 +23,25 @@ Godot'ta projeyi aç ve klavyeden **F5**'e bas. Hepsi bu.
 | **K** | **HAVALANDIR** — rakibi göğe fırlatır |
 | **R** | Dövüşü yeniden başlat |
 
-Ekrandaki düğmelere **fareyle de tıklayabilirsin** (telefonda parmakla).
+### Ekran düğmeleri (telefon)
+
+Klavye olmadan da tam oynanır. Ekranda iki küme var:
+
+| Nerede | Düğme | Ne yapar |
+|---|---|---|
+| Sol alt | **<**  /  **>** | Sola / sağa yürü |
+| Solda, onların üstünde | **BLOK** | Blok |
+| Sağ alt, üst sıra | **HAVALANDIR** / **ZIPLA** | Rakibi göğe fırlat / zıpla |
+| Sağ alt, alt sıra | **YUMRUK** / **TEKME** | Yumruk / tekme |
+| Nakavttan sonra, alt orta | **TEKRAR** | Dövüşü yeniden başlat |
+
+Nakavt olunca yedi oyun düğmesi kaybolur, yerine **TEKRAR** gelir —
+telefonda R tuşu olmadığı için dövüşü yeniden başlatmanın yolu budur.
+
+Düğmeler **çoklu dokunuşu** destekler: aynı anda **>** ve **ZIPLA**'ya
+basıp koşarak zıplayabilirsin — juggle kombosu için bu şart.
+
+Ekrandaki düğmelere **fareyle de tıklayabilirsin** (bilgisayarda test için).
 
 ## KOMBOYU DENEMEK
 

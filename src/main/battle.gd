@@ -30,6 +30,10 @@ func _ready() -> void:
 	stage.apply_camera_limits(cam)
 
 	hud.setup(player, enemy)
+	# TEKRAR dugmesi: TouchScreenButton'in "action" alani Input.action_press
+	# yoluyla calisir ve _unhandled_input'a olay DUSURMEZ. O yuzden action'a
+	# guvenmeyip dogrudan sinyale baglaniyoruz.
+	hud.restart_button().pressed.connect(_restart)
 	CombatEvents.fighter_died.connect(_on_died)
 
 	_ko_label = Label.new()
@@ -64,8 +68,14 @@ func _on_died(who: Node) -> void:
 	_ko_label.visible = true
 
 
+## Dead durumundan TEK cikis. Iki yol da buraya gelir: klavyeden R ve
+## ekrandaki TEKRAR dugmesi.
+func _restart() -> void:
+	get_tree().reload_current_scene()
+
+
 ## R dovusculerin girdi kaynagindan BAGIMSIZ: sahnenin kendi girdisi oldugu
-## icin nakavttan sonra da calisir (Dead durumundan tek cikis budur).
+## icin nakavttan sonra da calisir.
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"restart"):
-		get_tree().reload_current_scene()
+		_restart()
