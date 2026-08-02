@@ -38,9 +38,11 @@ func _ready() -> void:
 
 	_ko_label = Label.new()
 	_ko_label.set_anchors_preset(Control.PRESET_CENTER)
-	_ko_label.offset_left = -320.0
-	_ko_label.offset_right = 320.0
-	# Uc satir siger: "NAKAVT!" + kazanan + "R = yeniden basla".
+	# Genis: son satir ("TEKRAR ya da R = yeniden basla") 52 punto ile
+	# yaklasik 780 px tutuyor.
+	_ko_label.offset_left = -470.0
+	_ko_label.offset_right = 470.0
+	# Uc satir siger: "NAKAVT!" + kazanan + yeniden baslatma satiri.
 	_ko_label.offset_top = -110.0
 	_ko_label.offset_bottom = 110.0
 	_ko_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -62,7 +64,9 @@ func _on_died(who: Node) -> void:
 	var winner: Fighter = player if player_won else enemy
 	winner.input.disable()
 
-	_ko_label.text = "NAKAVT!\n%s KAZANDI\nR = yeniden basla" % ("LYRA" if player_won else "DUSMAN")
+	# Telefonda R tusu yok: ekrandaki TEKRAR dugmesi de ayni isi yapar.
+	_ko_label.text = "NAKAVT!\n%s KAZANDI\nTEKRAR ya da R = yeniden basla" % (
+		"LYRA" if player_won else "DUSMAN")
 	_ko_label.add_theme_color_override("font_color",
 		Color(0.4, 1.0, 0.5) if player_won else Color(1.0, 0.35, 0.35))
 	_ko_label.visible = true
