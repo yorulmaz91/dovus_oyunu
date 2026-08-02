@@ -11,6 +11,37 @@ peş peşe tekmelerle yukarıda tut.
 Godot'ta projeyi aç ve klavyeden **F5**'e bas. Hepsi bu.
 (Ya da sağ üstteki ▶ üçgen düğme.)
 
+**Oyun zaten internette:** https://yorulmaz91.github.io/dovus_oyunu/
+
+---
+
+## YAYINLAMAK
+
+`tools\yayinla.bat` dosyasına **çift tıkla**. Hepsi bu — derler, paketler
+ve yayına gönderir. 1-2 dakika sonra şu adres güncellenmiş olur:
+
+**https://yorulmaz91.github.io/dovus_oyunu/**
+
+- GitHub Pages **zaten etkin**, ayar yapman gerekmiyor.
+- Eski sürümü görüyorsan tarayıcıda **Ctrl+F5** yap (önbelleği atlar).
+- Linki bilen **herkes** oynayabilir; kurulum, hesap, mağaza gerekmez.
+
+## TELEFONDA DENEMEK (evde, yayınlamadan)
+
+Yayınlamak istemiyorsan, bilgisayarındaki sürümü telefonda açabilirsin:
+
+1. `tools\sunucu_baslat.bat` dosyasına çift tıkla (pencere açık kalsın).
+2. Telefon ile bilgisayar **aynı Wi-Fi ağında** olmalı.
+3. Telefonun tarayıcısına yaz: `http://<PC-IP>:8000`
+
+PC'nin IP'sini bulmak için komut satırında **`ipconfig`** yaz ve Wi-Fi
+bağdaştırıcısının **IPv4** satırına bak (örnek: `192.168.1.111`).
+Bu adres **ağdan ağa değişir** — başka bir Wi-Fi'da tekrar bakman gerekir.
+Güvenlik duvarı sorarsa "Özel ağlar" için izin ver.
+
+> İnternetten oynamak için yukarıdaki yayın linki yeterli; bu sunucuya
+> **gerek yok**. Bu yol sadece yayınlamadan hızlı denemek içindir.
+
 ## KONTROLLER
 
 | Tuş | Ne yapar |

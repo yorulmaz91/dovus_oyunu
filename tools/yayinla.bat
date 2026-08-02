@@ -31,8 +31,17 @@ if not exist "%PROJE%\build" mkdir "%PROJE%\build"
 type nul > "%PROJE%\build\.gdignore"
 
 REM Onceki derlemeden kalan dosya yeni yayina sizmasin.
+REM Virus tarayici veya onceki git islemi dosyalari kisa sure kilitli
+REM tutabiliyor; bir kez bekleyip tekrar deniyoruz.
 if exist "%CIKTI%" rmdir /s /q "%CIKTI%"
+if exist "%CIKTI%" (
+  echo Klasor kilitli gorunuyor, 2 saniye bekleyip tekrar deneniyor...
+  timeout /t 2 /nobreak >nul
+  rmdir /s /q "%CIKTI%"
+)
+if exist "%CIKTI%" goto :hata_temizlik
 mkdir "%CIKTI%"
+if errorlevel 1 goto :hata_temizlik
 
 "%GODOT%" --headless --path "%PROJE%" --export-release "Web" "%CIKTI%\index.html"
 if errorlevel 1 goto :hata_export
@@ -105,6 +114,15 @@ echo HATA: Web derlemesi basarisiz.
 echo Muhtemel sebep: dis aktarim sablonlari kurulu degil.
 echo Olmasi gereken klasor:
 echo   %%APPDATA%%\Godot\export_templates\4.7.1.stable\web_nothreads_release.zip
+goto :son
+
+:hata_temizlik
+echo.
+echo HATA: Eski derleme klasoru silinemedi:
+echo   %CIKTI%
+echo Bir program dosyalari kilitli tutuyor olabilir. Acik olan yerel
+echo sunucuyu (tools\sunucu_baslat.bat) ya da o klasoru gosteren bir
+echo Explorer penceresini kapatip tekrar dene.
 goto :son
 
 :hata_nojekyll
