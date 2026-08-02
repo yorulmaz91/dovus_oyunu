@@ -28,5 +28,6 @@ hit = SubResource("Res_hit_launcher")
 is_opener = true
 airborne = false
 chain_to = Array[StringName]([])
+jump_cancel = true
 forward_momentum = 70.0
 lock_facing = true

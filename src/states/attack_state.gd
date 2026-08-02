@@ -49,6 +49,16 @@ func update(delta: float) -> void:
 	# Iptal penceresi: ya animasyon izi acar (open_cancel_window) ya da
 	# saldiri rakibe degdigi an kendiliginden acilir.
 	if fighter.can_cancel:
+		# ZIPLAMA IPTALI - zincirden ONCE denenir.
+		# Havalandirici degdikten sonra toparlanmayi kesip havalanmani saglar;
+		# kendi juggle'ini kovalayabilmenin tek yolu budur. Iptal penceresi
+		# vurus onayiyla acildigi icin bosa sallanan hamle iptal EDILEMEZ.
+		# Ziplama hizi Idle/Run ile AYNI yoldan verilir - tek bir dogru vardir.
+		if move.jump_cancel and fighter.is_on_floor() and fighter.input.consume(&"jump"):
+			fighter.velocity.y = fighter.jump_velocity
+			fsm.change_to(&"Airborne", {"jumped": true})
+			return
+
 		var next_move: MoveDef = fighter.pick_chain_move(move)
 		if next_move != null:
 			fsm.change_to(&"Attack", {"move": next_move})

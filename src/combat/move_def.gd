@@ -22,6 +22,11 @@ extends Resource
 @export var airborne: bool = false
 ## Iptal penceresinde gecilebilecek hamle id'leri.
 @export var chain_to: Array[StringName] = []
+## Acik ise iptal penceresinde ZIPLA tusuna basarak toparlanma kesilir ve
+## dovuscu havalanir. Havalandiriciya ac: kendi juggle'ini kovalayabilmenin
+## tek yolu budur. Iptal penceresi vurus ONAYIYLA acildigi icin, bosa sallanan
+## bir hamle ziplamayla iptal EDILEMEZ.
+@export var jump_cancel: bool = false
 ## Hamle baslarken one atilma hizi (piksel/saniye).
 @export var forward_momentum: float = 0.0
 ## Hamle oynarken rakibe donmeyi durdur. Neredeyse her zaman acik olmali.

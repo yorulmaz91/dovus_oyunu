@@ -28,5 +28,6 @@ hit = SubResource("Res_hit_air_kick")
 is_opener = true
 airborne = true
 chain_to = Array[StringName]([&"air_kick"])
+jump_cancel = false
 forward_momentum = 0.0
 lock_facing = true
