@@ -1,2 +1,7 @@
 # Normalize EOL for all files that Git considers text files.
 * text=auto eol=lf
+
+# Windows toplu is dosyalari CRLF olmali - cmd.exe yalniz LF ile bazi
+# yapilarda (etiketler, goto) hatali davranir.
+*.bat text eol=crlf
+*.cmd text eol=crlf

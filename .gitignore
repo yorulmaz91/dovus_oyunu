@@ -1,3 +1,11 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# Web dis aktarim ciktisi - main dalina girmez, gh-pages dalina gider.
+# (export_presets.cfg ISE depoda kalir: derleme ayarlarinin kaynagi odur.)
+/build/*
+# ...ama .gdignore depoda kalir: build/ projenin icinde oldugu icin Godot
+# onu tarar, cikti PNG'lerini kendi kaynagi sanip ice aktarir ve bir
+# sonraki pakete koyardi. Bu dosya taramayi kapatir.
+!/build/.gdignore
