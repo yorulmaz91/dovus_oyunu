@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3]
+[gd_scene load_steps=40 format=3]
 
 [ext_resource type="Script" path="res://src/characters/enemies/grunt/grunt.gd" id="1_grunt"]
 [ext_resource type="Script" path="res://src/characters/base/ai_input.gd" id="2_input"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://src/states/hit_state.gd" id="8_hit"]
 [ext_resource type="Script" path="res://src/states/juggle_state.gd" id="9_jug"]
 [ext_resource type="Script" path="res://src/states/knockdown_state.gd" id="10_kd"]
+[ext_resource type="Script" path="res://src/states/dead_state.gd" id="10_dead"]
 [ext_resource type="Script" path="res://src/combat/hurtbox.gd" id="11_hurt"]
 [ext_resource type="Script" path="res://src/combat/hitbox.gd" id="12_hitb"]
 [ext_resource type="Resource" path="res://data/rules/default_juggle.tres" id="13_rules"]
@@ -401,3 +402,6 @@ script = ExtResource("9_jug")
 
 [node name="Knockdown" type="Node" parent="StateMachine"]
 script = ExtResource("10_kd")
+
+[node name="Dead" type="Node" parent="StateMachine"]
+script = ExtResource("10_dead")

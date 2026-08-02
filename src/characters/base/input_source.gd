@@ -48,3 +48,15 @@ func peek(action: StringName) -> bool:
 
 func clear() -> void:
 	_buffer.clear()
+
+
+## Dovus bitti: bu kaynak artik hicbir girdi uretmesin.
+## _physics_process kapandigi icin tampon bir daha DOLMAZ; tutulan yon ve blok
+## degerleri de sifirlanir, yoksa kazanan basili kalan tusla kosmaya devam
+## ederdi. Suren saldiri dogal sonuna kadar oynar, yeni eylem baslatilamaz.
+func disable() -> void:
+	set_physics_process(false)
+	clear()
+	move_x = 0.0
+	jump_held = false
+	block_held = false

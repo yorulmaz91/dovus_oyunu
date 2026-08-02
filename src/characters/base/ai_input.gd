@@ -35,8 +35,8 @@ func _poll(delta: float) -> void:
 	if fighter == null or fighter.opponent == null:
 		return
 
-	# Vurulurken hareket edemez - oyuncuyla ayni kural.
-	if fighter.fsm.current_name in [&"Hit", &"Juggle", &"Knockdown"]:
+	# Vurulurken (ve oldukten sonra) hareket edemez - oyuncuyla ayni kural.
+	if fighter.fsm.current_name in [&"Hit", &"Juggle", &"Knockdown", &"Dead"]:
 		_held_move = 0.0
 		move_x = 0.0
 		return

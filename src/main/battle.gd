@@ -12,6 +12,9 @@ extends Node2D
 @onready var hud: BattleHud = $HUD
 
 var _ko_label: Label
+## Nakavt bir kere olur. Iki taraf da ayni karede olse bile etiket ve
+## dondurma tek sefer calissin.
+var _match_over: bool = false
 
 
 func _ready() -> void:
@@ -31,27 +34,38 @@ func _ready() -> void:
 
 	_ko_label = Label.new()
 	_ko_label.set_anchors_preset(Control.PRESET_CENTER)
-	_ko_label.offset_left = -300.0
-	_ko_label.offset_right = 300.0
-	_ko_label.offset_top = -60.0
-	_ko_label.offset_bottom = 60.0
+	_ko_label.offset_left = -320.0
+	_ko_label.offset_right = 320.0
+	# Uc satir siger: "NAKAVT!" + kazanan + "R = yeniden basla".
+	_ko_label.offset_top = -110.0
+	_ko_label.offset_bottom = 110.0
 	_ko_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_ko_label.add_theme_font_size_override("font_size", 64)
+	_ko_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_ko_label.add_theme_font_size_override("font_size", 52)
 	_ko_label.add_theme_color_override("font_color", Color(1.0, 0.3, 0.3))
 	_ko_label.visible = false
 	hud.add_child(_ko_label)
 
 
 func _on_died(who: Node) -> void:
-	_ko_label.text = "NAKAVT!\nR = yeniden basla"
-	_ko_label.add_theme_font_size_override("font_size", 52)
+	if _match_over:
+		return
+	_match_over = true
+
+	var player_won: bool = who != player
+	# KAZANANI DONDUR: girdi kaynagi kapanir, suren saldirisi dogal olarak
+	# biter ama yeni bir eylem baslatamaz. Hem oyuncu hem YZ icin ayni yol.
+	var winner: Fighter = player if player_won else enemy
+	winner.input.disable()
+
+	_ko_label.text = "NAKAVT!\n%s KAZANDI\nR = yeniden basla" % ("LYRA" if player_won else "DUSMAN")
+	_ko_label.add_theme_color_override("font_color",
+		Color(0.4, 1.0, 0.5) if player_won else Color(1.0, 0.35, 0.35))
 	_ko_label.visible = true
-	if who == player:
-		_ko_label.add_theme_color_override("font_color", Color(1.0, 0.35, 0.35))
-	else:
-		_ko_label.add_theme_color_override("font_color", Color(0.4, 1.0, 0.5))
 
 
+## R dovusculerin girdi kaynagindan BAGIMSIZ: sahnenin kendi girdisi oldugu
+## icin nakavttan sonra da calisir (Dead durumundan tek cikis budur).
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"restart"):
 		get_tree().reload_current_scene()

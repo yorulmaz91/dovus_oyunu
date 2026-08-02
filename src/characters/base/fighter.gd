@@ -131,6 +131,9 @@ func land() -> void:
 func _separate_from_opponent(delta: float) -> void:
 	if opponent == null:
 		return
+	# Olen taraf itilmez ve itmez: kazanan cesedi sahnede kaydiramaz.
+	if is_dead() or opponent.is_dead():
+		return
 	const MIN_GAP := 46.0
 	var dx: float = global_position.x - opponent.global_position.x
 	if absf(global_position.y - opponent.global_position.y) > 120.0:
@@ -249,7 +252,8 @@ func take_hit(info: HitInfo) -> bool:
 	if response == FighterState.HitResponse.PASS and _is_blocking(info):
 		_damage(info.data.chip_damage)
 		HitStop.freeze(info.data.hitstop * 0.6)
-		fsm.change_to(&"Hit", {"hit": info, "blocked": true})
+		# Siyrik hasari da oldurebilir; o zaman Hit'e degil Dead'e gidilir.
+		fsm.change_to(&"Dead" if is_dead() else &"Hit", {"hit": info, "blocked": true})
 		return true
 
 	# Hasar olceklemesi: kombonun 8. vurusu 1.'si kadar aci vermemeli.
@@ -259,10 +263,16 @@ func take_hit(info: HitInfo) -> bool:
 	combo_changed.emit(combo_hits)
 	CombatEvents.combo_updated.emit(self, combo_hits)
 
-	HitStop.freeze(info.data.hitstop)
+	HitStop.freeze(info.data.hitstop)  # olduren vurusun donmasi da normal
 	flash()
 
-	if response == FighterState.HitResponse.PASS:
+	# SIRALAMA TUZAGI: olum kontrolu tepkiden ONCE gelmeli. _enter_reaction
+	# calisirsa durumu Hit/Juggle'a cevirir ve olumu ezerdi. Olum HANGI
+	# durumda gelirse gelsin (Hit, Juggle, Attack...) Dead'e gidilir - bu
+	# yuzden asagidaki dal response'a bakmadan once is_dead()'e bakar.
+	if is_dead():
+		fsm.change_to(&"Dead")
+	elif response == FighterState.HitResponse.PASS:
 		_enter_reaction(info)
 	return true
 
@@ -292,14 +302,24 @@ func _is_blocking(info: HitInfo) -> bool:
 	return (facing > 0) == attack_from_right
 
 
+## Can 0'in altina inmez ve olum TEK SEFERLIKTIR: olduktan sonra gelen hicbir
+## vurus ne hasar yazar ne de olum sinyalini tekrar yayar.
 func _damage(amount: float) -> void:
+	if is_dead():
+		return
 	if amount <= 0.0:
 		return
-	health = maxf(0.0, health - amount)
+	health = clampf(health - amount, 0.0, max_health)
 	health_changed.emit(health, max_health)
 	if health <= 0.0:
+		# Buraya yalnizca can >0 iken girilebildigi icin (yukaridaki erken
+		# cikis), bu iki sinyal olum basina TAM BIR KEZ yayilir.
 		died.emit()
 		CombatEvents.fighter_died.emit(self)
+
+
+func is_dead() -> bool:
+	return health <= 0.0
 
 
 func set_invulnerable(duration: float) -> void:
