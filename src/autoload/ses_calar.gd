@@ -65,8 +65,15 @@ func _ready() -> void:
 	CombatEvents.fighter_died.connect(_on_fighter_died)
 
 
-## Butun sesleri keser. Simdilik oyun icinde cagiran yok; duraklat/yeniden
-## basla gibi bir ihtiyac cikarsa hazir.
+## Oyun kapanirken hala calan bir ses varsa motor onu "kullanimda kalmis
+## kaynak" diye raporlar. DIKKAT: burada SADECE stop() cagrilir - stream'i
+## null'lamak (denendi) teardown sirasinda calan playback'i sahipsiz
+## birakip durumu KOTULESTIRIYOR.
+func _exit_tree() -> void:
+	sustur()
+
+
+## Butun sesleri keser. Duraklat/yeniden basla gibi bir ihtiyac cikarsa hazir.
 func sustur() -> void:
 	for p in _oyuncular:
 		p.stop()

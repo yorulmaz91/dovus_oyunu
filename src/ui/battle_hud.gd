@@ -88,7 +88,8 @@ func touch_button(button_name: String) -> TouchScreenButton:
 
 
 func _process(_delta: float) -> void:
-	if enemy == null:
+	# _state yalniz gelistirme derlemesinde KURULUR; yayinda hic yok.
+	if _state == null or enemy == null:
 		return
 	# Juggle sistemini canli izleyebilmen icin sayaclar.
 	_state.text = "Dusman durumu: %s    |    Juggle puani: %d / %d" % [
@@ -232,17 +233,22 @@ func _build() -> void:
 	_combo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(_combo)
 
-	_state = Label.new()
-	_state.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	_state.offset_left = -320.0
-	_state.offset_right = 320.0
-	_state.offset_top = 74.0
-	_state.offset_bottom = 100.0
-	_state.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_state.add_theme_font_size_override("font_size", 15)
-	_state.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
-	_state.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(_state)
+	# GELISTIRME ETIKETI: "Dusman durumu / Juggle puani" sayaci oyuncuya
+	# degil BIZE hitap ediyor. Yayin (release) derlemesinde hic KURULMAZ -
+	# gizlenmez, yok. Editorde F5 debug derlemesi oldugu icin gorunmeye
+	# devam eder.
+	if OS.is_debug_build():
+		_state = Label.new()
+		_state.set_anchors_preset(Control.PRESET_CENTER_TOP)
+		_state.offset_left = -320.0
+		_state.offset_right = 320.0
+		_state.offset_top = 74.0
+		_state.offset_bottom = 100.0
+		_state.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_state.add_theme_font_size_override("font_size", 15)
+		_state.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
+		_state.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		root.add_child(_state)
 
 	# Ipucu SOL USTE tasindi: alt kenar artik dokunmatik kumenin.
 	var hint := Label.new()

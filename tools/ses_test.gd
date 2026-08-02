@@ -28,6 +28,8 @@ var _t: int = 0
 var _faz_kare: int = 0
 var problems: Array[String] = []
 var _reported: bool = false
+## Rapor basildiktan sonra cikisi geciktiren sayac (nedeni asagida).
+var _cikis_geri_sayim: int = 35
 var _last_tag: String = ""
 
 # --- faz sonuclari ---
@@ -216,6 +218,12 @@ func _physics_process(_delta: float) -> void:
 		if not _reported:
 			_reported = true
 			_report()
+		# Raporu bastiktan sonra CIKMADAN once calan sesler bitsin. Son faz
+		# ayni karede 12 ses baslatiyor; hala calarken cikilirsa motor
+		# kapanista onlari "sizinti" diye raporluyor (zararsiz ama gunlugu
+		# kirletiyor ve kosudan kosuya degisiyor).
+		_cikis_geri_sayim -= 1
+		if _cikis_geri_sayim <= 0:
 			get_tree().quit()
 
 

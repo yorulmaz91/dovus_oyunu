@@ -25,6 +25,8 @@ var phase: String = "boot"
 var _t: int = 0
 var problems: Array[String] = []
 var _reported: bool = false
+## Rapor basildiktan sonra cikisi geciktiren sayac (nedeni asagida).
+var _cikis_geri_sayim: int = 35
 var _last_tag: String = ""
 
 ## ad -> TouchScreenButton
@@ -202,6 +204,12 @@ func _physics_process(_delta: float) -> void:
 		if not _reported:
 			_reported = true
 			_report()
+		# Raporu bastiktan sonra CIKMADAN once son sesin bitmesini bekle.
+		# T6 dusmani olduruyor ve nakavt.wav 0.5 sn = 30 kare suruyor; ses
+		# hala calarken cikilirsa motor kapanista o kaynagi "kullanimda
+		# kalmis" diye raporluyor (zararsiz ama gunlugu kirletiyor).
+		_cikis_geri_sayim -= 1
+		if _cikis_geri_sayim <= 0:
 			get_tree().quit()
 
 

@@ -22,7 +22,12 @@ signal combo_changed(hits: int)
 @export var ground_accel: float = 2600.0
 @export var ground_friction: float = 2800.0
 ## Ziplama gucu. Havalandiricinin firlattigi yuksekligi YAKALAYABILMELI,
-## yoksa juggle'i havada kovalayamazsin. (Su an: zipla ~177px, firlat ~196px)
+## yoksa juggle'i havada kovalayamazsin.
+## Su an: zipla ~177 px, havalandirici ~216 px. Hesap (h = v^2 / 2g):
+##   zipla   820^2 / (2 * 1900)                = 177 px
+##   firlat  640^2 / (2 * 1900 * 0.50)         = 216 px
+## (640 = launcher.tres launch_power, 0.50 = default_juggle.tres
+##  rise_gravity_scale - juggle'da YUKARI cikarken yer cekimi yarilanir.)
 @export var jump_velocity: float = -820.0
 @export var gravity: float = 1900.0
 @export var max_fall_speed: float = 1500.0
@@ -139,8 +144,11 @@ func basla_ziplama() -> void:
 func _separate_from_opponent(delta: float) -> void:
 	if opponent == null:
 		return
-	# Olen taraf itilmez ve itmez: kazanan cesedi sahnede kaydiramaz.
+	# Olen ya da YERDE YATAN taraf itilmez: kazanan cesedi/serilmis rakibi
+	# sahnede kaydiramaz. Kalkinca (Idle'a donunce) itme normale doner.
 	if is_dead() or opponent.is_dead():
+		return
+	if fsm.current_name == &"Knockdown" or opponent.fsm.current_name == &"Knockdown":
 		return
 	const MIN_GAP := 46.0
 	var dx: float = global_position.x - opponent.global_position.x
