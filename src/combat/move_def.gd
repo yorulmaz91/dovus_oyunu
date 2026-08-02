@@ -1,0 +1,28 @@
+# =============================================================================
+# MoveDef  —  Bir tusu bir animasyona baglar ve zincirleri tanimlar.
+# NEREYE BAGLI: Hicbir node'a. Hazir olanlar: data/moves/lyra/
+# =============================================================================
+class_name MoveDef
+extends Resource
+
+## Benzersiz isim. Diger hamleler "chain_to" listesinde buna referans verir.
+@export var id: StringName = &"light_1"
+## AnimationPlayer icindeki bir animasyon adiyla AYNI olmali.
+@export var animation: StringName = &"atk_light_1"
+## Input Map icindeki bir eylem adiyla AYNI olmali.
+@export var input_action: StringName = &"attack_light"
+## Bu hamlenin hasar karti. Ayni tekme kutusu farkli hamlelerde farkli hasar
+## versin diye HitData hamleye baglidir, kutuya degil.
+@export var hit: HitData
+
+@export_group("Kurallar")
+## Bostan baslatilabilir mi? Devam hamlelerinde kapali olmali.
+@export var is_opener: bool = true
+## Acik ise sadece havada kullanilir.
+@export var airborne: bool = false
+## Iptal penceresinde gecilebilecek hamle id'leri.
+@export var chain_to: Array[StringName] = []
+## Hamle baslarken one atilma hizi (piksel/saniye).
+@export var forward_momentum: float = 0.0
+## Hamle oynarken rakibe donmeyi durdur. Neredeyse her zaman acik olmali.
+@export var lock_facing: bool = true

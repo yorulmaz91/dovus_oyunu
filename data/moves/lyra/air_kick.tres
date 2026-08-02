@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="MoveDef" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/combat/move_def.gd" id="1_move"]
+[ext_resource type="Script" path="res://src/combat/hit_data.gd" id="2_hit"]
+
+[sub_resource type="Resource" id="Res_hit_air_kick"]
+script = ExtResource("2_hit")
+damage = 6.0
+chip_damage = 1.0
+hitstun = 0.22
+blockstun = 0.14
+hitstop = 0.05
+knockback = Vector2(130, 0)
+launch_power = 560.0
+height = 1
+reaction = 0
+unblockable = false
+can_juggle = true
+juggle_cost = 1
+camera_shake = 2.0
+
+[resource]
+script = ExtResource("1_move")
+id = &"air_kick"
+animation = &"atk_air_kick"
+input_action = &"attack_kick"
+hit = SubResource("Res_hit_air_kick")
+is_opener = true
+airborne = true
+chain_to = Array[StringName]([&"air_kick"])
+forward_momentum = 0.0
+lock_facing = true

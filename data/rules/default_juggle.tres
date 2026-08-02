@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="JuggleRules" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/combat/juggle_rules.gd" id="1_rules"]
+
+[resource]
+script = ExtResource("1_rules")
+max_juggle_hits = 8
+lift_decay = 0.72
+min_lift_ratio = 0.18
+gravity_ramp = 0.18
+rise_gravity_scale = 0.5
+fall_gravity_scale = 0.7
+air_hitstun = 0.3
+air_hitstun_decay = 0.9
+allow_air_tech = false
+damage_scaling = PackedFloat32Array(1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.45, 0.4, 0.35, 0.3)
+knockdown_time = 0.55
+wakeup_invuln = 0.4
+air_drag = 320.0

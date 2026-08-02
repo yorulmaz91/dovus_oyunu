@@ -1,0 +1,33 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://src/main/battle.gd" id="1_battle"]
+[ext_resource type="PackedScene" path="res://src/stages/neo_dojo/neo_dojo.tscn" id="2_stage"]
+[ext_resource type="PackedScene" path="res://src/characters/lyra/lyra.tscn" id="3_lyra"]
+[ext_resource type="PackedScene" path="res://src/characters/enemies/grunt/grunt.tscn" id="4_grunt"]
+[ext_resource type="Script" path="res://src/main/battle_camera.gd" id="5_cam"]
+[ext_resource type="Script" path="res://src/ui/battle_hud.gd" id="6_hud"]
+
+[node name="Battle" type="Node2D"]
+script = ExtResource("1_battle")
+
+[node name="NeoDojo" parent="." instance=ExtResource("2_stage")]
+
+[node name="Fighters" type="Node2D" parent="."]
+
+[node name="Lyra" parent="Fighters" instance=ExtResource("3_lyra")]
+position = Vector2(-150, 0)
+
+[node name="Grunt" parent="Fighters" instance=ExtResource("4_grunt")]
+position = Vector2(150, 0)
+
+[node name="BattleCamera" type="Camera2D" parent="."]
+position = Vector2(0, -160)
+script = ExtResource("5_cam")
+margin = Vector2(360, 300)
+min_zoom = 0.7
+max_zoom = 1.2
+follow_speed = 7.0
+zoom_speed = 4.5
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("6_hud")

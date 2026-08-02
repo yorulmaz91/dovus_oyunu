@@ -1,0 +1,225 @@
+[gd_scene load_steps=22 format=3]
+
+[ext_resource type="Script" path="res://src/stages/stage.gd" id="1_stage"]
+[ext_resource type="Script" path="res://src/stages/parallax_depth.gd" id="2_par"]
+[ext_resource type="Script" path="res://src/vfx/impact_light.gd" id="3_impact"]
+
+[sub_resource type="Gradient" id="Grad_sky"]
+offsets = PackedFloat32Array(0, 0.55, 1)
+colors = PackedColorArray(0.055, 0.071, 0.153, 1, 0.145, 0.153, 0.318, 1, 0.404, 0.267, 0.373, 1)
+
+[sub_resource type="GradientTexture2D" id="Tex_sky"]
+gradient = SubResource("Grad_sky")
+width = 3000
+height = 1400
+fill_from = Vector2(0, 0)
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Grad_far"]
+offsets = PackedFloat32Array(0, 0.62, 1)
+colors = PackedColorArray(0.106, 0.129, 0.243, 0, 0.129, 0.169, 0.325, 1, 0.078, 0.098, 0.196, 1)
+
+[sub_resource type="GradientTexture2D" id="Tex_far"]
+gradient = SubResource("Grad_far")
+width = 3000
+height = 700
+fill_from = Vector2(0, 0)
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Grad_mid"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(0.157, 0.196, 0.353, 0, 0.204, 0.263, 0.451, 1, 0.11, 0.145, 0.267, 1)
+
+[sub_resource type="GradientTexture2D" id="Tex_mid"]
+gradient = SubResource("Grad_mid")
+width = 3000
+height = 520
+fill_from = Vector2(0, 0)
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Grad_wall"]
+offsets = PackedFloat32Array(0, 0.7, 1)
+colors = PackedColorArray(0.204, 0.216, 0.271, 1, 0.267, 0.271, 0.322, 1, 0.161, 0.161, 0.196, 1)
+
+[sub_resource type="GradientTexture2D" id="Tex_wall"]
+gradient = SubResource("Grad_wall")
+width = 2800
+height = 620
+fill_from = Vector2(0, 0)
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Grad_floor"]
+offsets = PackedFloat32Array(0, 0.25, 1)
+colors = PackedColorArray(0.361, 0.325, 0.286, 1, 0.243, 0.216, 0.188, 1, 0.114, 0.098, 0.086, 1)
+
+[sub_resource type="GradientTexture2D" id="Tex_floor"]
+gradient = SubResource("Grad_floor")
+width = 3400
+height = 320
+fill_from = Vector2(0, 0)
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Grad_fg"]
+offsets = PackedFloat32Array(0, 0.3, 1)
+colors = PackedColorArray(0.043, 0.047, 0.078, 1, 0.055, 0.059, 0.098, 1, 0.02, 0.024, 0.043, 1)
+
+[sub_resource type="GradientTexture2D" id="Tex_fg"]
+gradient = SubResource("Grad_fg")
+width = 3000
+height = 200
+fill_from = Vector2(0, 0)
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Grad_light"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="Tex_light"]
+gradient = SubResource("Grad_light")
+width = 512
+height = 512
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+
+[sub_resource type="RectangleShape2D" id="Shape_floor"]
+size = Vector2(4000, 240)
+
+[sub_resource type="RectangleShape2D" id="Shape_wall"]
+size = Vector2(200, 1800)
+
+[sub_resource type="OccluderPolygon2D" id="Occ_floor"]
+polygon = PackedVector2Array(-1600, 0, 1600, 0, 1600, 60, -1600, 60)
+
+[node name="NeoDojo" type="Node2D"]
+script = ExtResource("1_stage")
+wall_left = -1100.0
+wall_right = 1100.0
+ceiling = -1400.0
+floor_y = 0.0
+spawn_p1 = Vector2(-150, 0)
+spawn_p2 = Vector2(150, 0)
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.48, 0.5, 0.62, 1)
+
+[node name="Sky" type="Parallax2D" parent="."]
+script = ExtResource("2_par")
+depth = 0.03
+fog_color = Color(0.3, 0.34, 0.46, 1)
+fog_strength = 0.75
+
+[node name="Sprite2D" type="Sprite2D" parent="Sky"]
+position = Vector2(0, -420)
+texture = SubResource("Tex_sky")
+
+[node name="CityFar" type="Parallax2D" parent="."]
+script = ExtResource("2_par")
+depth = 0.18
+fog_color = Color(0.3, 0.34, 0.46, 1)
+fog_strength = 0.8
+
+[node name="Sprite2D" type="Sprite2D" parent="CityFar"]
+position = Vector2(0, -330)
+texture = SubResource("Tex_far")
+
+[node name="CityMid" type="Parallax2D" parent="."]
+script = ExtResource("2_par")
+depth = 0.38
+fog_color = Color(0.3, 0.34, 0.46, 1)
+fog_strength = 0.8
+
+[node name="Sprite2D" type="Sprite2D" parent="CityMid"]
+position = Vector2(0, -250)
+texture = SubResource("Tex_mid")
+
+[node name="DojoWall" type="Parallax2D" parent="."]
+script = ExtResource("2_par")
+depth = 0.72
+fog_color = Color(0.3, 0.34, 0.46, 1)
+fog_strength = 0.7
+
+[node name="Sprite2D" type="Sprite2D" parent="DojoWall"]
+position = Vector2(0, -300)
+texture = SubResource("Tex_wall")
+
+[node name="PlayPlane" type="Node2D" parent="."]
+
+[node name="FloorVisual" type="Sprite2D" parent="PlayPlane"]
+z_index = -1
+position = Vector2(0, 160)
+texture = SubResource("Tex_floor")
+
+[node name="Floor" type="StaticBody2D" parent="PlayPlane"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayPlane/Floor"]
+position = Vector2(0, 120)
+shape = SubResource("Shape_floor")
+
+[node name="WallL" type="StaticBody2D" parent="PlayPlane"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayPlane/WallL"]
+position = Vector2(-1200, -700)
+shape = SubResource("Shape_wall")
+
+[node name="WallR" type="StaticBody2D" parent="PlayPlane"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayPlane/WallR"]
+position = Vector2(1200, -700)
+shape = SubResource("Shape_wall")
+
+[node name="FloorOccluder" type="LightOccluder2D" parent="PlayPlane"]
+occluder = SubResource("Occ_floor")
+occluder_light_mask = 1
+
+[node name="Foreground" type="Parallax2D" parent="."]
+script = ExtResource("2_par")
+depth = 1.3
+fog_strength = 0.0
+
+[node name="Sprite2D" type="Sprite2D" parent="Foreground"]
+position = Vector2(0, 300)
+texture = SubResource("Tex_fg")
+
+[node name="LightRig" type="Node2D" parent="."]
+
+[node name="KeyLight" type="DirectionalLight2D" parent="LightRig"]
+position = Vector2(0, -700)
+rotation = -0.6
+color = Color(1, 0.941, 0.855, 1)
+energy = 1.0
+shadow_enabled = true
+shadow_filter = 1
+shadow_item_cull_mask = 1
+height = 0.35
+max_distance = 3000.0
+
+[node name="FillLight" type="PointLight2D" parent="LightRig"]
+position = Vector2(-320, -420)
+color = Color(0.549, 0.678, 1, 1)
+energy = 0.55
+shadow_enabled = false
+texture = SubResource("Tex_light")
+texture_scale = 5.0
+
+[node name="RimLight" type="PointLight2D" parent="LightRig"]
+position = Vector2(360, -360)
+color = Color(1, 0.463, 0.706, 1)
+energy = 0.9
+blend_mode = 1
+shadow_enabled = false
+texture = SubResource("Tex_light")
+texture_scale = 3.5
+
+[node name="ImpactLight" type="PointLight2D" parent="LightRig"]
+texture = SubResource("Tex_light")
+texture_scale = 1.6
+script = ExtResource("3_impact")
+flash_energy = 2.6
+decay = 9.0
