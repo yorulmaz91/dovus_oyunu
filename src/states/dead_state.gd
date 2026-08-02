@@ -62,6 +62,7 @@ func _on_ground() -> bool:
 func _hit_the_ground() -> void:
 	_landed = true
 	fighter.play(&"knockdown", true)
+	SesCalar.cal_yere_dusme()  # Knockdown ile AYNI ses - ayni olay cunku
 	# "knockdown" dongusuz; bitince "downed" dongusune gecilir ve orada kalinir.
 	if not fighter.anim.animation_finished.is_connected(_on_impact_finished):
 		fighter.anim.animation_finished.connect(_on_impact_finished, CONNECT_ONE_SHOT)

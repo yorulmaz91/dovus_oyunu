@@ -126,6 +126,14 @@ func land() -> void:
 	air_actions = 1
 
 
+## ZIPLAMANIN TEK DOGRU YOLU. Hiz + ses tek yerde dursun diye var: Idle, Run
+## ve saldiri iptali (AttackState) ucu de burayi cagirir. Ziplama hizini
+## degistirmen gerekirse bir tek burasi degisir.
+func basla_ziplama() -> void:
+	velocity.y = jump_velocity
+	SesCalar.cal_zipla()
+
+
 ## Yumusak itme kutusu: dovuscular ic ice gecmesin diye birbirlerini nazikce
 ## iterler. Iki taraf da bunu calistirdigi icin ayrilma simetriktir.
 func _separate_from_opponent(delta: float) -> void:
@@ -192,6 +200,10 @@ func hitbox_on(box_name: StringName) -> void:
 	if current_move != null and current_move.hit != null:
 		b.data = current_move.hit
 	b.activate()
+	# Savurma sesi kutu ACILIRKEN calar - hamle iskalasa bile duyulur.
+	# Hissin yarisi budur: bosa sallanan bir tekmenin de sesi olmali.
+	if current_move != null:
+		SesCalar.cal(current_move.swing_sfx, SesCalar.DB_SAVURMA)
 
 
 func hitbox_off(box_name: StringName) -> void:
@@ -251,6 +263,7 @@ func take_hit(info: HitInfo) -> bool:
 	# Blok (sadece notr durumlardan - juggle sirasinda blok yapilamaz).
 	if response == FighterState.HitResponse.PASS and _is_blocking(info):
 		_damage(info.data.chip_damage)
+		CombatEvents.hit_blocked.emit(self, info)
 		HitStop.freeze(info.data.hitstop * 0.6)
 		# Siyrik hasari da oldurebilir; o zaman Hit'e degil Dead'e gidilir.
 		fsm.change_to(&"Dead" if is_dead() else &"Hit", {"hit": info, "blocked": true})

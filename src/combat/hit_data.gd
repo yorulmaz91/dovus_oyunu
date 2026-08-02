@@ -35,5 +35,8 @@ enum Reaction { LIGHT, HEAVY, CRUMPLE, LAUNCH, KNOCKDOWN, SWEEP }
 
 @export_group("Geri bildirim")
 @export var hit_vfx: PackedScene
+## Bu vurus DEGDIGINDE calan ses.
 @export var hit_sfx: AudioStream
+## Yukaridaki sesin calma seviyesi. Agir hamleler daha gur duyulsun.
+@export_range(-30.0, 6.0, 0.5) var hit_sfx_db: float = 0.0
 @export var camera_shake: float = 2.0

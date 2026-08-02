@@ -1,7 +1,9 @@
-[gd_resource type="Resource" script_class="MoveDef" load_steps=4 format=3]
+[gd_resource type="Resource" script_class="MoveDef" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://src/combat/move_def.gd" id="1_move"]
 [ext_resource type="Script" path="res://src/combat/hit_data.gd" id="2_hit"]
+[ext_resource type="AudioStream" path="res://assets/sfx/savurma.wav" id="3_savurma"]
+[ext_resource type="AudioStream" path="res://assets/sfx/vurus_orta.wav" id="4_hit_sfx"]
 
 [sub_resource type="Resource" id="Res_hit_kick"]
 script = ExtResource("2_hit")
@@ -17,6 +19,8 @@ reaction = 0
 unblockable = false
 can_juggle = true
 juggle_cost = 1
+hit_sfx = ExtResource("4_hit_sfx")
+hit_sfx_db = -3.0
 camera_shake = 2.2
 
 [resource]
@@ -25,6 +29,7 @@ id = &"kick_1"
 animation = &"atk_kick_1"
 input_action = &"attack_kick"
 hit = SubResource("Res_hit_kick")
+swing_sfx = ExtResource("3_savurma")
 is_opener = true
 airborne = false
 chain_to = Array[StringName]([&"launcher"])

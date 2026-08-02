@@ -26,5 +26,5 @@ func update(delta: float) -> void:
 	if fighter.try_start_attack(false):
 		return
 	if fighter.input.consume(&"jump"):
-		fighter.velocity.y = fighter.jump_velocity
+		fighter.basla_ziplama()
 		fsm.change_to(&"Airborne", {"jumped": true})

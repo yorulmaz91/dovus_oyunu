@@ -55,7 +55,7 @@ func update(delta: float) -> void:
 		# vurus onayiyla acildigi icin bosa sallanan hamle iptal EDILEMEZ.
 		# Ziplama hizi Idle/Run ile AYNI yoldan verilir - tek bir dogru vardir.
 		if move.jump_cancel and fighter.is_on_floor() and fighter.input.consume(&"jump"):
-			fighter.velocity.y = fighter.jump_velocity
+			fighter.basla_ziplama()
 			fsm.change_to(&"Airborne", {"jumped": true})
 			return
 

@@ -14,6 +14,9 @@ extends Resource
 ## Bu hamlenin hasar karti. Ayni tekme kutusu farkli hamlelerde farkli hasar
 ## versin diye HitData hamleye baglidir, kutuya degil.
 @export var hit: HitData
+## SAVURMA sesi - vurus kutusu ACILIRKEN calar, yani ISKALASA DA duyulur.
+## Degdiginde calan ses ise yukaridaki hasar kartinda (hit.hit_sfx).
+@export var swing_sfx: AudioStream
 
 @export_group("Kurallar")
 ## Bostan baslatilabilir mi? Devam hamlelerinde kapali olmali.

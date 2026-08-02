@@ -90,6 +90,40 @@ Zincir hamleler: **J → L → K** (yumruk, tekme, havalandır).
 
 ---
 
+## SES
+
+Sesler `assets/sfx/` altında, 9 adet `.wav`. Hepsi **yer tutucu** — kodla
+üretildiler, gerçek kayıt değiller.
+
+**Hangi ses nerede çalıyor** (Inspector'dan değiştirilir, kod gerekmez):
+
+| Ne | Nerede tanımlı |
+|---|---|
+| Savurma ve darbe sesleri | Hamle kartları: `data/moves/lyra/*.tres` → `Swing Sfx` ve `Hit → Hit Sfx` |
+| Blok, nakavt, zıpla, yere düşme | `data/audio/varsayilan_sesler.tres` |
+
+**Kendi sesini koymak** — iki yol:
+1. Aynı adla `.wav` dosyanı `assets/sfx/` içine bırak (üzerine yaz).
+2. Ya da Inspector'da ilgili alana kendi dosyanı sürükle.
+
+**Genel ses seviyesi:** `default_bus_layout.tres` → **SFX** katmanı.
+(Boş duran **Muzik** katmanı ileride müzik için hazır bekliyor.)
+
+**Yer tutucuları yeniden üretmek** (dosyaları silersen ya da tarifi
+değiştirirsen):
+
+```
+Godot_v4.7.1-stable_win64_console.exe --headless --path . --script res://tools/ses_uret.gd
+```
+
+Tarifler `tools/ses_uret.gd` içinde, sade Türkçe yorumlarla.
+
+> **Tarayıcıda ses:** tarayıcılar, kullanıcı ekrana ilk kez dokunana/
+> tıklayana kadar sesi kilitler. Yayındaki oyunda ses **ilk dokunuştan
+> sonra** başlar — bu bir hata değil, tarayıcı kuralıdır.
+
+---
+
 ## AYARLARI DEĞİŞTİRMEK (kod yazmadan)
 
 Godot'ta soldaki **FileSystem** panelinden dosyaya çift tıkla, sağdaki

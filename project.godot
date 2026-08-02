@@ -19,6 +19,9 @@ config/icon="res://icon.svg"
 
 HitStop="*res://src/autoload/hit_stop.gd"
 CombatEvents="*res://src/autoload/combat_events.gd"
+; SIRA ONEMLI: SesCalar, CombatEvents'in sinyallerine _ready icinde abone
+; oluyor - o yuzden ondan SONRA gelmeli.
+SesCalar="*res://src/autoload/ses_calar.gd"
 
 [display]
 

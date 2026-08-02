@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SesSeti" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://src/audio/ses_seti.gd" id="1_set"]
+[ext_resource type="AudioStream" path="res://assets/sfx/blok.wav" id="2_blok"]
+[ext_resource type="AudioStream" path="res://assets/sfx/nakavt.wav" id="3_nakavt"]
+[ext_resource type="AudioStream" path="res://assets/sfx/zipla.wav" id="4_zipla"]
+[ext_resource type="AudioStream" path="res://assets/sfx/yere_dusme.wav" id="5_dusme"]
+
+[resource]
+script = ExtResource("1_set")
+blok = ExtResource("2_blok")
+nakavt = ExtResource("3_nakavt")
+zipla = ExtResource("4_zipla")
+yere_dusme = ExtResource("5_dusme")

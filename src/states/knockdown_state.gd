@@ -19,6 +19,7 @@ func enter(_msg: Dictionary = {}) -> void:
 	fighter.play(&"knockdown", true)
 	HitStop.freeze(0.05)
 	CombatEvents.camera_shake_requested.emit(4.0)
+	SesCalar.cal_yere_dusme()
 
 
 ## OTG korumasi - yerdeki rakibe vurulamaz. Ileride yer sekmesi / yerden
