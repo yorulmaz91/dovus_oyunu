@@ -182,6 +182,18 @@ func _check_setup() -> void:
 	var hurts := player.find_children("*", "Hurtbox", true, false)
 	if hurts.size() != 3:
 		problems.append("Hurtbox sayisi 3 degil: %d" % hurts.size())
+	# Lyra'nin rig parcalari artik GERCEK CIZIM: hicbiri kodla uretilen
+	# gradyan doku olmamali. (BlobShadow rig'in parcasi degil, o haric.)
+	var rig_sprite := 0
+	var gradyan := 0
+	for s: Sprite2D in player.get_node("Rig").find_children("*", "Sprite2D", true, false):
+		rig_sprite += 1
+		if s.texture is GradientTexture2D:
+			gradyan += 1
+	if rig_sprite != 15 or gradyan > 0:
+		problems.append("Lyra rig dokulari: %d sprite, %d tanesi hala gradyan (15 sprite / 0 gradyan olmali)" % [
+			rig_sprite, gradyan])
+
 	# Nakavt sistemi iki karakterde de "Dead" node'u olmadan calismaz.
 	for f: Fighter in [player, enemy]:
 		if not f.fsm.has(&"Dead"):
