@@ -65,6 +65,13 @@ MAX_BOYUT = 512
 ## YENI CIZIM yandan-3/4: tek bir deltoid var ve o omuzun KENDISI, kesilirse
 ## govde daralir. Bu yuzden 0.0 - ekran dogrulamasiyla teyit edildi.
 GOVDE_OMUZ_KESIM = 0.0
+## YATAY AYNALAMA. Karakter SAGA bakar; sola donuk cizilmis parcalar burada
+## cevrilir. Islem zincirinin EN BASINDA, seffaflastirmadan bile once yapilir.
+## govde: cizim sola donuktu - Lyra saga bakarken gogus SIRT yonunde
+## kaliyordu. Gogus amblemi simetrik sevron, aynalama guvenli.
+FLIP = {
+    "govde": True,
+}
 ## Tasmali doldurmada kullanilan isaret rengi (cizimde bulunmadigi
 ## dogrulanir).
 ISARET = (255, 0, 255)
@@ -273,6 +280,8 @@ def main() -> None:
             raise SystemExit("HATA: %s icin kaynak gorsel yok." % ad)
 
         ham = Image.open(kaynak_yol)
+        if FLIP.get(ad, False):
+            ham = ham.transpose(Image.FLIP_LEFT_RIGHT)
         im = arka_plani_sil(ham)
         im = kirp(im)
 
