@@ -14,7 +14,7 @@
 extends Node2D
 
 const CIKIS := "res://build/dogrulama/poz/"
-const YAKINLIK := 3.0
+const YAKINLIK := 2.4
 ## Kaydedilecek pozlar: [dosya adi, animasyon, saniye]
 ## Saldirilarda secilen an, vurus kutusunun ACIK oldugu an.
 const POZLAR := [
@@ -70,7 +70,7 @@ func _physics_process(_delta: float) -> void:
 		lyra.input.set_physics_process(false)
 		# Flash rig.modulate'i eziyor; teshiste temiz renk istiyoruz.
 		lyra.rig.modulate = Color.WHITE
-		kam.global_position = lyra.global_position + Vector2(0.0, -92.0)
+		kam.global_position = lyra.global_position + Vector2(10.0, -86.0)
 		return
 	if lyra == null or frames < 5:
 		return

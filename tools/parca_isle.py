@@ -56,7 +56,9 @@ ALFA_ICERI_CEK = 0.28
 PAY = 4
 ## kalca parcasinda ATILAN alt oran. Bacak pacalari ust_bacak'ta zaten var.
 ## Ekran dogrulamasinda ayarlanir.
-KALCA_ALT_KESIM = 0.30
+## 0.30 -> 0.24: kosu ve tekme pozlarinda uyluk ust ucu ile sort arasinda
+## centik kaliyordu; sortu biraz uzatmak bindirmeyi geri getirdi.
+KALCA_ALT_KESIM = 0.24
 ## Doku uzun kenari (px). Karakter ekranda ~50 px; 512 fazlasiyla yeter.
 MAX_BOYUT = 512
 ## govde parcasinda HER IKI YANDAN atilan oran.
@@ -72,6 +74,15 @@ GOVDE_OMUZ_KESIM = 0.0
 ## SILME YUMUSAK ve ELIPTIK: dikdortgen kesim denendi, duz kenar birakip
 ## "dilimlenmis omuz" gorunumu verdi (tekme pozunda belirgindi).
 ## merkez ve yaricap, parcanin kendi olculerine orandir.
+## GOVDE OMUZ KESIMI (kok neden cozumu). Yandan-3/4 govde, atlet aski
+## hattinin DISINDA iki ten renkli deltoid TOPU tasiyor. Bunlari kol
+## ortemiyor (arka kol govdenin arkasinda cizilir) ve ayrik kure gibi
+## duruyorlar. Omuzu artik ust_kol parcasinin kendi yuvarlak ucu verir.
+## Silme YALNIZ TEN RENKLI piksellere uygulanir: aski, kontur ve
+## boyun/trapez ten bolgesi KALIR. Degerler parca oranidir (levhayla
+## ayarlanir): (x_siniri, y_siniri)
+GOVDE_OMUZ_KES_SOL = (0.30, 0.42)   # x < 0.30 ve y < 0.42 -> arka top
+GOVDE_OMUZ_KES_SAG = (0.80, 0.30)   # x > 0.80 ve y < 0.30 -> on top
 GOVDE_OMUZ_MERKEZ = (0.10, 0.10)
 GOVDE_OMUZ_YARICAP = (0.30, 0.22)
 ## Kenar yumusakligi: 1.0 = tam yumusak gecis.
@@ -300,6 +311,26 @@ def main() -> None:
             if GOVDE_OMUZ_KESIM > 0.0:
                 kes = int(im.width * GOVDE_OMUZ_KESIM)
                 im = im.crop((kes, 0, im.width - kes, im.height))
+            # --- OMUZ TOPLARINI SIL (yalniz ten renkli pikseller) ---
+            g = np.asarray(im).astype(np.int16)
+            gy, gx = g.shape[0], g.shape[1]
+            yy, xx = np.mgrid[0:gy, 0:gx]
+            fx, fy = xx / float(gx), yy / float(gy)
+            rr, gg, bb, aa = g[..., 0], g[..., 1], g[..., 2], g[..., 3]
+            ten_px = ((aa > 40) & (rr > 95) & (gg > 40) & (bb > 20)
+                      & (rr > gg) & (gg > bb) & ((rr - bb) > 15) & ((rr - gg) > 5))
+            bolge = (((fx < GOVDE_OMUZ_KES_SOL[0]) & (fy < GOVDE_OMUZ_KES_SOL[1]))
+                     | ((fx > GOVDE_OMUZ_KES_SAG[0]) & (fy < GOVDE_OMUZ_KES_SAG[1])))
+            sil = ten_px & bolge
+            ga = np.asarray(im).copy()
+            ga[..., 3] = np.where(sil, 0, ga[..., 3])
+            im = Image.fromarray(ga, "RGBA")
+            # Kesim kenarini 1 px yumusat - keskin basamak kalmasin.
+            al = Image.fromarray(np.asarray(im)[..., 3], "L").filter(ImageFilter.GaussianBlur(0.8))
+            ga = np.asarray(im).copy()
+            ga[..., 3] = np.asarray(al)
+            im = Image.fromarray(ga, "RGBA")
+
             # NOT: govdenin arka omuz topunu SILMEYI iki kez denedim.
             # Dikdortgen kesim duz kenar birakti ("dilimlenmis omuz"),
             # eliptik yumusak silme ise fazla yiyip omuzu hayaletlestirdi.

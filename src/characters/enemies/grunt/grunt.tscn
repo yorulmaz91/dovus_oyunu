@@ -172,7 +172,7 @@ position = Vector2(4, 12)
 shape = SubResource("Shape_kick")
 
 [node name="Sprite2D" type="Sprite2D" parent="Rig/Skeleton2D/Hips"]
-position = Vector2(0, -1)
+position = Vector2(0, 0)
 scale = Vector2(0.080623, 0.080623)
 texture = ExtResource("20_kalca")
 
@@ -192,8 +192,8 @@ bone_angle = 1.5708
 
 [node name="Sprite2D" type="Sprite2D" parent="Rig/Skeleton2D/Hips/Torso/ArmB_Upper"]
 modulate = Color(0.720, 0.750, 0.820, 1)
-position = Vector2(-3, 10.5)
-scale = Vector2(0.076172, 0.076172)
+position = Vector2(-3, 9)
+scale = Vector2(0.079219, 0.079219)
 texture = ExtResource("20_ust_kol")
 
 [node name="ArmB_Lower" type="Bone2D" parent="Rig/Skeleton2D/Hips/Torso/ArmB_Upper"]
@@ -248,8 +248,8 @@ length = 30.0
 bone_angle = 1.5708
 
 [node name="Sprite2D" type="Sprite2D" parent="Rig/Skeleton2D/Hips/Torso/ArmF_Upper"]
-position = Vector2(3, 10.5)
-scale = Vector2(0.076172, 0.076172)
+position = Vector2(3, 9)
+scale = Vector2(0.079219, 0.079219)
 texture = ExtResource("20_ust_kol")
 
 [node name="ArmF_Lower" type="Bone2D" parent="Rig/Skeleton2D/Hips/Torso/ArmF_Upper"]
