@@ -65,6 +65,17 @@ MAX_BOYUT = 512
 ## YENI CIZIM yandan-3/4: tek bir deltoid var ve o omuzun KENDISI, kesilirse
 ## govde daralir. Bu yuzden 0.0 - ekran dogrulamasiyla teyit edildi.
 GOVDE_OMUZ_KESIM = 0.0
+## Govdenin ARKA omuz topunu siler. Yandan-3/4 cizimde govde kendi ARKA
+## deltoidini tasiyor; arka kol GOVDENIN ARKASINDA cizildigi icin o topu
+## ortemiyor ve ciplak bir kure gibi disari cikiyordu. Arka omuzu artik
+## ArmB parcasinin kendi yuvarlak ucu veriyor.
+## SILME YUMUSAK ve ELIPTIK: dikdortgen kesim denendi, duz kenar birakip
+## "dilimlenmis omuz" gorunumu verdi (tekme pozunda belirgindi).
+## merkez ve yaricap, parcanin kendi olculerine orandir.
+GOVDE_OMUZ_MERKEZ = (0.10, 0.10)
+GOVDE_OMUZ_YARICAP = (0.30, 0.22)
+## Kenar yumusakligi: 1.0 = tam yumusak gecis.
+GOVDE_OMUZ_YUMUSAK = 0.0  # 0 = silme KAPALI
 ## YATAY AYNALAMA. Karakter SAGA bakar; sola donuk cizilmis parcalar burada
 ## cevrilir. Islem zincirinin EN BASINDA, seffaflastirmadan bile once yapilir.
 ## govde: cizim sola donuktu - Lyra saga bakarken gogus SIRT yonunde
@@ -286,9 +297,28 @@ def main() -> None:
         im = kirp(im)
 
         if ad == "govde":
-            # Iki yandaki omuz kutuklerini at, sonra yeniden kirp.
-            kes = int(im.width * GOVDE_OMUZ_KESIM)
-            im = im.crop((kes, 0, im.width - kes, im.height))
+            if GOVDE_OMUZ_KESIM > 0.0:
+                kes = int(im.width * GOVDE_OMUZ_KESIM)
+                im = im.crop((kes, 0, im.width - kes, im.height))
+            # NOT: govdenin arka omuz topunu SILMEYI iki kez denedim.
+            # Dikdortgen kesim duz kenar birakti ("dilimlenmis omuz"),
+            # eliptik yumusak silme ise fazla yiyip omuzu hayaletlestirdi.
+            # Dogru cozum kirpmak DEGIL, kolun yuvarlak basligini omuz
+            # eklemine oturtup topu ORTMEK oldu (lyra/grunt.tscn'de
+            # Arm*_Upper sprite y 15 -> 10.5). GOVDE_OMUZ_YUMUSAK = 0
+            # oldugu icin asagidaki blok etkisizdir; ayar burada duruyor.
+            d = np.asarray(im).astype(np.float32).copy()
+            yuk, gen = d.shape[0], d.shape[1]
+            yy, xx = np.mgrid[0:yuk, 0:gen]
+            # Normalize edilmis elips uzakligi (arka-ust kose merkezli)
+            u = ((xx / gen - GOVDE_OMUZ_MERKEZ[0]) / GOVDE_OMUZ_YARICAP[0]) ** 2
+            w2 = ((yy / yuk - GOVDE_OMUZ_MERKEZ[1]) / GOVDE_OMUZ_YARICAP[1]) ** 2
+            uzak = np.sqrt(u + w2)
+            ic = 1.0 - GOVDE_OMUZ_YUMUSAK
+            kalan = np.clip((uzak - ic) / max(1e-6, 1.0 - ic), 0.0, 1.0)
+            if GOVDE_OMUZ_YUMUSAK > 0.0:
+                d[..., 3] *= kalan
+            im = Image.fromarray(d.astype(np.uint8), "RGBA")
             im = kirp(im)
 
         if ad == "kalca":

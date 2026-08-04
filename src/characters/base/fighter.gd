@@ -379,7 +379,9 @@ func _update_flash(delta: float) -> void:
 	if _flash_t <= 0.0:
 		return
 	_flash_t = maxf(0.0, _flash_t - delta)
-	rig.modulate = Color.WHITE.lerp(flash_color, _flash_t / 0.12)
+	# Ust sinir 0.55: TAM BEYAZ yasak. Vurus aninda yuz ve kiyafet detayi
+	# secilebilir kalsin - "alci heykel" gorunumu olmasin. Sure degismedi.
+	rig.modulate = Color.WHITE.lerp(flash_color, minf(_flash_t / 0.12, 0.55))
 
 
 ## Sahte temas golgesi: yukseklikle kuculur ve solar. Maliyeti bir sprite.
