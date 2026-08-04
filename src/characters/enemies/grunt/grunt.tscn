@@ -1,102 +1,62 @@
-[gd_scene load_steps=40 format=3]
+[gd_scene load_steps=37 format=3]
 
 [ext_resource type="Script" path="res://src/characters/enemies/grunt/grunt.gd" id="1_grunt"]
+
 [ext_resource type="Script" path="res://src/characters/base/ai_input.gd" id="2_input"]
+
 [ext_resource type="Script" path="res://src/states/state_machine.gd" id="3_fsm"]
+
 [ext_resource type="Script" path="res://src/states/idle_state.gd" id="4_idle"]
+
 [ext_resource type="Script" path="res://src/states/run_state.gd" id="5_run"]
+
 [ext_resource type="Script" path="res://src/states/airborne_state.gd" id="6_air"]
+
 [ext_resource type="Script" path="res://src/states/attack_state.gd" id="7_atk"]
+
 [ext_resource type="Script" path="res://src/states/hit_state.gd" id="8_hit"]
+
 [ext_resource type="Script" path="res://src/states/juggle_state.gd" id="9_jug"]
+
 [ext_resource type="Script" path="res://src/states/knockdown_state.gd" id="10_kd"]
+
 [ext_resource type="Script" path="res://src/states/dead_state.gd" id="10_dead"]
+
 [ext_resource type="Script" path="res://src/combat/hurtbox.gd" id="11_hurt"]
+
 [ext_resource type="Script" path="res://src/combat/hitbox.gd" id="12_hitb"]
+
 [ext_resource type="Resource" path="res://data/rules/default_juggle.tres" id="13_rules"]
+
 [ext_resource type="Resource" path="res://data/moves/lyra/jab.tres" id="14_jab"]
+
 [ext_resource type="Resource" path="res://data/moves/lyra/kick_1.tres" id="15_kick"]
+
 [ext_resource type="Resource" path="res://data/moves/lyra/launcher.tres" id="16_launch"]
+
 [ext_resource type="Resource" path="res://data/moves/lyra/air_kick.tres" id="17_airk"]
 
-[sub_resource type="Gradient" id="Grad_skin"]
-offsets = PackedFloat32Array(0, 1)
-colors = PackedColorArray(0.859, 0.729, 0.639, 1, 0.729, 0.588, 0.51, 1)
+[ext_resource type="Texture2D" path="res://assets/characters/grunt/parts/kafa.png" id="20_kafa"]
 
-[sub_resource type="Gradient" id="Grad_suit"]
-offsets = PackedFloat32Array(0, 1)
-colors = PackedColorArray(0.573, 0.212, 0.251, 1, 0.333, 0.114, 0.153, 1)
+[ext_resource type="Texture2D" path="res://assets/characters/grunt/parts/govde.png" id="20_govde"]
 
-[sub_resource type="Gradient" id="Grad_dark"]
-offsets = PackedFloat32Array(0, 1)
-colors = PackedColorArray(0.22, 0.09, 0.11, 1, 0.106, 0.043, 0.055, 1)
+[ext_resource type="Texture2D" path="res://assets/characters/grunt/parts/kalca.png" id="20_kalca"]
+
+[ext_resource type="Texture2D" path="res://assets/characters/grunt/parts/ust_kol.png" id="20_ust_kol"]
+
+[ext_resource type="Texture2D" path="res://assets/characters/grunt/parts/alt_kol.png" id="20_alt_kol"]
+
+[ext_resource type="Texture2D" path="res://assets/characters/grunt/parts/el.png" id="20_el"]
+
+[ext_resource type="Texture2D" path="res://assets/characters/grunt/parts/ust_bacak.png" id="20_ust_bacak"]
+
+[ext_resource type="Texture2D" path="res://assets/characters/grunt/parts/alt_bacak.png" id="20_alt_bacak"]
+
+[ext_resource type="Texture2D" path="res://assets/characters/grunt/parts/ayak.png" id="20_ayak"]
 
 [sub_resource type="Gradient" id="Grad_shadow"]
 offsets = PackedFloat32Array(0, 1)
 colors = PackedColorArray(0, 0, 0, 0.75, 0, 0, 0, 0)
-
-[sub_resource type="GradientTexture2D" id="Tex_pelvis"]
-gradient = SubResource("Grad_dark")
-width = 30
-height = 20
-fill_from = Vector2(0, 0)
-fill_to = Vector2(0, 1)
-
-[sub_resource type="GradientTexture2D" id="Tex_torso"]
-gradient = SubResource("Grad_suit")
-width = 38
-height = 48
-fill_from = Vector2(0, 0)
-fill_to = Vector2(0, 1)
-
-[sub_resource type="GradientTexture2D" id="Tex_head"]
-gradient = SubResource("Grad_skin")
-width = 26
-height = 28
-fill_from = Vector2(0, 0)
-fill_to = Vector2(0, 1)
-
-[sub_resource type="GradientTexture2D" id="Tex_arm_u"]
-gradient = SubResource("Grad_suit")
-width = 12
-height = 30
-fill_from = Vector2(0, 0)
-fill_to = Vector2(0, 1)
-
-[sub_resource type="GradientTexture2D" id="Tex_arm_l"]
-gradient = SubResource("Grad_suit")
-width = 11
-height = 28
-fill_from = Vector2(0, 0)
-fill_to = Vector2(0, 1)
-
-[sub_resource type="GradientTexture2D" id="Tex_hand"]
-gradient = SubResource("Grad_dark")
-width = 13
-height = 13
-fill_from = Vector2(0, 0)
-fill_to = Vector2(0, 1)
-
-[sub_resource type="GradientTexture2D" id="Tex_leg_u"]
-gradient = SubResource("Grad_suit")
-width = 14
-height = 40
-fill_from = Vector2(0, 0)
-fill_to = Vector2(0, 1)
-
-[sub_resource type="GradientTexture2D" id="Tex_leg_l"]
-gradient = SubResource("Grad_suit")
-width = 12
-height = 38
-fill_from = Vector2(0, 0)
-fill_to = Vector2(0, 1)
-
-[sub_resource type="GradientTexture2D" id="Tex_foot"]
-gradient = SubResource("Grad_dark")
-width = 22
-height = 10
-fill_from = Vector2(0, 0)
-fill_to = Vector2(0, 1)
 
 [sub_resource type="GradientTexture2D" id="Tex_shadow"]
 gradient = SubResource("Grad_shadow")
@@ -126,7 +86,7 @@ radius = 26.0
 size = Vector2(60, 36)
 
 [sub_resource type="OccluderPolygon2D" id="Occ_body"]
-polygon = PackedVector2Array(-20, 0, -22, -80, -14, -150, 0, -170, 14, -150, 22, -80, 20, 0)
+polygon = PackedVector2Array(-14, 0, -18, -80, -20, -136, -14, -146, -13, -172, 0, -182, 13, -172, 14, -146, 20, -136, 18, -80, 14, 0)
 
 [node name="Grunt" type="CharacterBody2D"]
 collision_layer = 2
@@ -169,9 +129,10 @@ length = 40.0
 bone_angle = 1.5708
 
 [node name="Sprite2D" type="Sprite2D" parent="Rig/Skeleton2D/Hips/LegB_Upper"]
-modulate = Color(0.62, 0.66, 0.72, 1)
+modulate = Color(0.720, 0.750, 0.820, 1)
 position = Vector2(0, 20)
-texture = SubResource("Tex_leg_u")
+scale = Vector2(0.101563, 0.101563)
+texture = ExtResource("20_ust_bacak")
 
 [node name="LegB_Lower" type="Bone2D" parent="Rig/Skeleton2D/Hips/LegB_Upper"]
 position = Vector2(0, 40)
@@ -181,9 +142,10 @@ length = 38.0
 bone_angle = 1.5708
 
 [node name="Sprite2D" type="Sprite2D" parent="Rig/Skeleton2D/Hips/LegB_Upper/LegB_Lower"]
-modulate = Color(0.62, 0.66, 0.72, 1)
+modulate = Color(0.720, 0.750, 0.820, 1)
 position = Vector2(0, 19)
-texture = SubResource("Tex_leg_l")
+scale = Vector2(0.096484, 0.096484)
+texture = ExtResource("20_alt_bacak")
 
 [node name="FootB" type="Bone2D" parent="Rig/Skeleton2D/Hips/LegB_Upper/LegB_Lower"]
 position = Vector2(0, 38)
@@ -193,9 +155,10 @@ length = 22.0
 bone_angle = 1.5708
 
 [node name="Sprite2D" type="Sprite2D" parent="Rig/Skeleton2D/Hips/LegB_Upper/LegB_Lower/FootB"]
-modulate = Color(0.62, 0.66, 0.72, 1)
-position = Vector2(5, 3)
-texture = SubResource("Tex_foot")
+modulate = Color(0.720, 0.750, 0.820, 1)
+position = Vector2(7.3, 2.4)
+scale = Vector2(0.049140, 0.049140)
+texture = ExtResource("20_ayak")
 
 [node name="Hitbox_KickB" type="Area2D" parent="Rig/Skeleton2D/Hips/LegB_Upper/LegB_Lower/FootB"]
 script = ExtResource("12_hitb")
@@ -205,7 +168,9 @@ position = Vector2(4, 12)
 shape = SubResource("Shape_kick")
 
 [node name="Sprite2D" type="Sprite2D" parent="Rig/Skeleton2D/Hips"]
-texture = SubResource("Tex_pelvis")
+position = Vector2(0, -1)
+scale = Vector2(0.080623, 0.080623)
+texture = ExtResource("20_kalca")
 
 [node name="Torso" type="Bone2D" parent="Rig/Skeleton2D/Hips"]
 position = Vector2(0, -12)
@@ -222,9 +187,10 @@ length = 30.0
 bone_angle = 1.5708
 
 [node name="Sprite2D" type="Sprite2D" parent="Rig/Skeleton2D/Hips/Torso/ArmB_Upper"]
-modulate = Color(0.62, 0.66, 0.72, 1)
-position = Vector2(0, 15)
-texture = SubResource("Tex_arm_u")
+modulate = Color(0.720, 0.750, 0.820, 1)
+position = Vector2(-3, 15)
+scale = Vector2(0.076172, 0.076172)
+texture = ExtResource("20_ust_kol")
 
 [node name="ArmB_Lower" type="Bone2D" parent="Rig/Skeleton2D/Hips/Torso/ArmB_Upper"]
 position = Vector2(0, 30)
@@ -234,9 +200,10 @@ length = 28.0
 bone_angle = 1.5708
 
 [node name="Sprite2D" type="Sprite2D" parent="Rig/Skeleton2D/Hips/Torso/ArmB_Upper/ArmB_Lower"]
-modulate = Color(0.62, 0.66, 0.72, 1)
-position = Vector2(0, 14)
-texture = SubResource("Tex_arm_l")
+modulate = Color(0.720, 0.750, 0.820, 1)
+position = Vector2(-3, 14)
+scale = Vector2(0.071094, 0.071094)
+texture = ExtResource("20_alt_kol")
 
 [node name="HandB" type="Bone2D" parent="Rig/Skeleton2D/Hips/Torso/ArmB_Upper/ArmB_Lower"]
 position = Vector2(0, 28)
@@ -246,13 +213,16 @@ length = 13.0
 bone_angle = 1.5708
 
 [node name="Sprite2D" type="Sprite2D" parent="Rig/Skeleton2D/Hips/Torso/ArmB_Upper/ArmB_Lower/HandB"]
-modulate = Color(0.62, 0.66, 0.72, 1)
-position = Vector2(0, 5)
-texture = SubResource("Tex_hand")
+modulate = Color(0.720, 0.750, 0.820, 1)
+position = Vector2(-3, 10)
+rotation = 1.5708
+scale = Vector2(0.039063, 0.039063)
+texture = ExtResource("20_el")
 
 [node name="Sprite2D" type="Sprite2D" parent="Rig/Skeleton2D/Hips/Torso"]
-position = Vector2(0, -20)
-texture = SubResource("Tex_torso")
+position = Vector2(0, -21.9)
+scale = Vector2(0.102539, 0.102539)
+texture = ExtResource("20_govde")
 
 [node name="Head" type="Bone2D" parent="Rig/Skeleton2D/Hips/Torso"]
 position = Vector2(0, -46)
@@ -262,8 +232,9 @@ length = 28.0
 bone_angle = 1.5708
 
 [node name="Sprite2D" type="Sprite2D" parent="Rig/Skeleton2D/Hips/Torso/Head"]
-position = Vector2(0, -12)
-texture = SubResource("Tex_head")
+position = Vector2(1, -17)
+scale = Vector2(0.082031, 0.082031)
+texture = ExtResource("20_kafa")
 
 [node name="ArmF_Upper" type="Bone2D" parent="Rig/Skeleton2D/Hips/Torso"]
 position = Vector2(7, -38)
@@ -273,8 +244,9 @@ length = 30.0
 bone_angle = 1.5708
 
 [node name="Sprite2D" type="Sprite2D" parent="Rig/Skeleton2D/Hips/Torso/ArmF_Upper"]
-position = Vector2(0, 15)
-texture = SubResource("Tex_arm_u")
+position = Vector2(3, 15)
+scale = Vector2(0.076172, 0.076172)
+texture = ExtResource("20_ust_kol")
 
 [node name="ArmF_Lower" type="Bone2D" parent="Rig/Skeleton2D/Hips/Torso/ArmF_Upper"]
 position = Vector2(0, 30)
@@ -284,8 +256,9 @@ length = 28.0
 bone_angle = 1.5708
 
 [node name="Sprite2D" type="Sprite2D" parent="Rig/Skeleton2D/Hips/Torso/ArmF_Upper/ArmF_Lower"]
-position = Vector2(0, 14)
-texture = SubResource("Tex_arm_l")
+position = Vector2(3, 14)
+scale = Vector2(0.071094, 0.071094)
+texture = ExtResource("20_alt_kol")
 
 [node name="HandF" type="Bone2D" parent="Rig/Skeleton2D/Hips/Torso/ArmF_Upper/ArmF_Lower"]
 position = Vector2(0, 28)
@@ -295,8 +268,10 @@ length = 13.0
 bone_angle = 1.5708
 
 [node name="Sprite2D" type="Sprite2D" parent="Rig/Skeleton2D/Hips/Torso/ArmF_Upper/ArmF_Lower/HandF"]
-position = Vector2(0, 5)
-texture = SubResource("Tex_hand")
+position = Vector2(3, 10)
+rotation = 1.5708
+scale = Vector2(0.039063, 0.039063)
+texture = ExtResource("20_el")
 
 [node name="Hitbox_Punch" type="Area2D" parent="Rig/Skeleton2D/Hips/Torso/ArmF_Upper/ArmF_Lower/HandF"]
 script = ExtResource("12_hitb")
@@ -314,7 +289,8 @@ bone_angle = 1.5708
 
 [node name="Sprite2D" type="Sprite2D" parent="Rig/Skeleton2D/Hips/LegF_Upper"]
 position = Vector2(0, 20)
-texture = SubResource("Tex_leg_u")
+scale = Vector2(0.101563, 0.101563)
+texture = ExtResource("20_ust_bacak")
 
 [node name="LegF_Lower" type="Bone2D" parent="Rig/Skeleton2D/Hips/LegF_Upper"]
 position = Vector2(0, 40)
@@ -325,7 +301,8 @@ bone_angle = 1.5708
 
 [node name="Sprite2D" type="Sprite2D" parent="Rig/Skeleton2D/Hips/LegF_Upper/LegF_Lower"]
 position = Vector2(0, 19)
-texture = SubResource("Tex_leg_l")
+scale = Vector2(0.096484, 0.096484)
+texture = ExtResource("20_alt_bacak")
 
 [node name="FootF" type="Bone2D" parent="Rig/Skeleton2D/Hips/LegF_Upper/LegF_Lower"]
 position = Vector2(0, 38)
@@ -335,8 +312,9 @@ length = 22.0
 bone_angle = 1.5708
 
 [node name="Sprite2D" type="Sprite2D" parent="Rig/Skeleton2D/Hips/LegF_Upper/LegF_Lower/FootF"]
-position = Vector2(5, 3)
-texture = SubResource("Tex_foot")
+position = Vector2(7.3, 2.4)
+scale = Vector2(0.049140, 0.049140)
+texture = ExtResource("20_ayak")
 
 [node name="Hitbox_KickF" type="Area2D" parent="Rig/Skeleton2D/Hips/LegF_Upper/LegF_Lower/FootF"]
 script = ExtResource("12_hitb")

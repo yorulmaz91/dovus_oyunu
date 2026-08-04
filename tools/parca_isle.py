@@ -15,8 +15,19 @@ NE YAPAR (her kaynak gorsel icin):
 NASIL CALISTIRILIR (proje klasorunde):
     python tools/parca_isle.py
 
-Girdi : assets/kaynak/lyra/*.png        (ham cizimler, git'te durur)
-Cikti : assets/characters/lyra/parts/*.png  (Godot'un kullandigi parcalar)
+  6. Uzun kenari MAX_BOYUT'a indirir (LANCZOS). Ham cizimler ~1500 px;
+     karakter ekranda ~50 px kapliyor, o yuzden 512 fazlasiyla yeter ve
+     paket boyutunu bes kat kuculttur.
+  7. VARYANT: Lyra parcalarindan Grunt'un renk varyantini uretir. HSV'de
+     SECICI kaydirma - ten ve kontur cizgilerine DOKUNMAZ, yalniz kumas
+     renklerini degistirir. Yeni cizim gerekmez.
+
+NASIL CALISTIRILIR (proje klasorunde):
+    python tools/parca_isle.py
+
+Girdi : assets/kaynak/lyra/*.png             (ham cizimler, git'te durur)
+Cikti : assets/characters/lyra/parts/*.png   (Lyra parcalari)
+        assets/characters/grunt/parts/*.png  (Grunt renk varyanti)
 """
 
 import os
@@ -46,10 +57,14 @@ PAY = 4
 ## kalca parcasinda ATILAN alt oran. Bacak pacalari ust_bacak'ta zaten var.
 ## Ekran dogrulamasinda ayarlanir.
 KALCA_ALT_KESIM = 0.30
-## govde parcasinda HER IKI YANDAN atilan oran. Cizimdeki omuz kutukleri
-## kolun disina tasip "kopuk omuz" gibi duruyordu; omuzu ust_kol parcasinin
-## kendi yuvarlak ucu veriyor. (Kalcadaki cift paca sorununun omuz hali.)
-GOVDE_OMUZ_KESIM = 0.13
+## Doku uzun kenari (px). Karakter ekranda ~50 px; 512 fazlasiyla yeter.
+MAX_BOYUT = 512
+## govde parcasinda HER IKI YANDAN atilan oran.
+## ONCEKI CIZIM onden bakisti ve iki yanindan omuz kutugu tasiyordu; kolun
+## disina tasip "kopuk omuz" veriyordu, o yuzden 0.13 kesiliyordu.
+## YENI CIZIM yandan-3/4: tek bir deltoid var ve o omuzun KENDISI, kesilirse
+## govde daralir. Bu yuzden 0.0 - ekran dogrulamasiyla teyit edildi.
+GOVDE_OMUZ_KESIM = 0.0
 ## Tasmali doldurmada kullanilan isaret rengi (cizimde bulunmadigi
 ## dogrulanir).
 ISARET = (255, 0, 255)
@@ -129,6 +144,99 @@ def ten_medyani(im: Image.Image):
     return medyan, int(maske.sum())
 
 
+def kucult(im: Image.Image, en_uzun: int = MAX_BOYUT) -> Image.Image:
+    """Uzun kenari en_uzun'a indirir. Zaten kucukse dokunmaz."""
+    uzun = max(im.size)
+    if uzun <= en_uzun:
+        return im
+    k = en_uzun / float(uzun)
+    return im.resize((max(1, round(im.width * k)), max(1, round(im.height * k))),
+                     Image.LANCZOS)
+
+
+# =============================================================================
+# GRUNT RENK VARYANTI
+# =============================================================================
+GRUNT_CIKIS = os.path.join("assets", "characters", "grunt", "parts")
+
+
+def _rgb_hsv(rgb: np.ndarray):
+    """Vektorel RGB(0-1) -> HSV. H derece (0-360), S ve V 0-1."""
+    r, g, b = rgb[..., 0], rgb[..., 1], rgb[..., 2]
+    enb = rgb.max(axis=-1)
+    enk = rgb.min(axis=-1)
+    fark = enb - enk
+    h = np.zeros_like(enb)
+    m = (fark > 1e-6) & (enb == r)
+    h[m] = (60.0 * ((g[m] - b[m]) / fark[m])) % 360.0
+    m = (fark > 1e-6) & (enb == g)
+    h[m] = 60.0 * ((b[m] - r[m]) / fark[m]) + 120.0
+    m = (fark > 1e-6) & (enb == b)
+    h[m] = 60.0 * ((r[m] - g[m]) / fark[m]) + 240.0
+    s = np.where(enb > 1e-6, fark / np.maximum(enb, 1e-6), 0.0)
+    return h % 360.0, s, enb
+
+
+def _hsv_rgb(h: np.ndarray, s: np.ndarray, v: np.ndarray) -> np.ndarray:
+    """Vektorel HSV -> RGB(0-1)."""
+    i = np.floor(h / 60.0).astype(int) % 6
+    f = (h / 60.0) - np.floor(h / 60.0)
+    p = v * (1.0 - s)
+    q = v * (1.0 - f * s)
+    t = v * (1.0 - (1.0 - f) * s)
+    r = np.select([i == 0, i == 1, i == 2, i == 3, i == 4, i == 5], [v, q, p, p, t, v])
+    g = np.select([i == 0, i == 1, i == 2, i == 3, i == 4, i == 5], [t, v, v, q, p, p])
+    b = np.select([i == 0, i == 1, i == 2, i == 3, i == 4, i == 5], [p, p, t, v, v, q])
+    return np.stack([r, g, b], axis=-1)
+
+
+def grunt_varyanti(im: Image.Image):
+    """Lyra parcasindan Grunt paletini uretir. SECICI: ten ve konturlara
+    dokunmaz, yalniz kumas renklerini kaydirir."""
+    dizi = np.asarray(im).astype(np.float32) / 255.0
+    rgb = dizi[..., :3].copy()
+    a = dizi[..., 3]
+    h, s, v = _rgb_hsv(rgb)
+
+    gorunur = a > 0.05
+    # --- DOKUNULMAYANLAR ---
+    kontur = v < 0.25                                   # cizgi/koyu golge
+    ten = (h >= 10.0) & (h <= 40.0) & (s > 0.15)        # ten tonu
+    korunan = kontur | ten
+
+    # --- BOYANANLAR ---
+    # Notr kumas. PARLAK notrler (goz aki, beyaz vurgu) HARIC birakilir -
+    # aksi halde Grunt'un gozleri kizariyordu.
+    notr = gorunur & ~korunan & (s < 0.15) & (v < 0.78)
+    haki = gorunur & ~korunan & (h >= 40.0) & (h <= 90.0)        # zeytin
+    turkuaz = gorunur & ~korunan & (h >= 150.0) & (h <= 200.0) & (s > 0.3)
+
+    yh, ys, yv = h.copy(), s.copy(), v.copy()
+
+    # gri/notr -> kizil-bordo. Orijinal doygunlugu 0.45-0.60 bandina yay.
+    yh[notr] = 355.0
+    ys[notr] = 0.45 + (s[notr] / 0.15) * 0.15
+    yv[notr] = v[notr] * 0.85
+
+    # haki/zeytin -> koyu bordo
+    yh[haki] = 350.0
+    yv[haki] = v[haki] * 0.80
+
+    # turkuaz vurgu -> turuncu-amber
+    yh[turkuaz] = 30.0
+
+    yeni = _hsv_rgb(yh, ys, yv)
+    yeni = np.where(gorunur[..., None], yeni, rgb)
+    cikti = np.dstack([(np.clip(yeni, 0.0, 1.0) * 255.0).astype(np.uint8),
+                       (a * 255.0).astype(np.uint8)])
+
+    toplam = int(gorunur.sum())
+    boyanan = int((notr | haki | turkuaz).sum())
+    yuzde = (100.0 * boyanan / toplam) if toplam else 0.0
+    ayrinti = (int(notr.sum()), int(haki.sum()), int(turkuaz.sum()))
+    return Image.fromarray(cikti, "RGBA"), yuzde, ayrinti
+
+
 def main() -> None:
     if not os.path.isdir(KAYNAK):
         raise SystemExit("HATA: %s yok." % KAYNAK)
@@ -170,6 +278,8 @@ def main() -> None:
             im = im.crop((0, 0, im.width, yeni_yukseklik))
             im = kirp(im)
 
+        im = kucult(im)
+
         cikis_yol = os.path.join(CIKIS, ad + ".png")
         im.save(cikis_yol)
         boyutlar[ad] = im.size
@@ -199,6 +309,20 @@ def main() -> None:
                 ad, str(medyan), "(%+d,%+d,%+d)" % fark, piksel, not_))
     print("\n  NOT: duzeltme UYGULANMADI. Fark buyukse kaynak cizim ya da")
     print("       Sprite2D modulate ile ayarlanir - karar mimarin.")
+
+    # --- GRUNT RENK VARYANTI (yeni cizim gerekmez) ---
+    os.makedirs(GRUNT_CIKIS, exist_ok=True)
+    print("\n--------- GRUNT RENK VARYANTI ---------")
+    print("  KORUNAN: ten (H 10-40, S>0.15) ve kontur/koyu (V<0.25)")
+    print("  BOYANAN: notr kumas -> kizil-bordo | haki -> koyu bordo |")
+    print("           turkuaz vurgu -> turuncu-amber")
+    print("  %-11s %9s %9s %9s %9s" % ("parca", "boyanan", "notr", "haki", "turkuaz"))
+    for ad in PARCALAR:
+        kaynak = Image.open(os.path.join(CIKIS, ad + ".png")).convert("RGBA")
+        varyant, yuzde, (n, hk, tq) = grunt_varyanti(kaynak)
+        varyant.save(os.path.join(GRUNT_CIKIS, ad + ".png"))
+        print("  %-11s %8.1f%% %9d %9d %9d" % (ad, yuzde, n, hk, tq))
+
     print("\n=========== BITTI ===========\n")
 
 

@@ -10,7 +10,8 @@
 # acilip kapanir, normaldir):
 #   Godot_v4.7.1-stable_win64.exe --path . res://tools/ekran_dogrula.tscn
 #
-# Cikti: build/dogrulama/{idle,yumruk,tekme,havalandirici,zipla,juggle}.png
+# Cikti: build/dogrulama/{idle,yumruk,tekme,havalandirici,zipla,juggle,
+#        grunt_idle,karsilasma}.png
 # =============================================================================
 extends Node
 
@@ -56,8 +57,9 @@ func _physics_process(_delta: float) -> void:
 	if player == null:
 		return
 
-	# Kamera hep Lyra'nin govdesinde dursun.
-	kam.global_position = player.global_position + Vector2(14.0, -88.0)
+	# Kamera hep Lyra'nin govdesinde dursun (son iki faz kendi kamerasini kurar).
+	if phase not in ["grunt_idle", "karsilasma"]:
+		kam.global_position = player.global_position + Vector2(14.0, -88.0)
 
 	if _tap_left > 0:
 		_tap_left -= 1
@@ -110,8 +112,32 @@ func _physics_process(_delta: float) -> void:
 				if enemy.global_position.y < -60.0:
 					_cek("juggle")
 			elif alinan.has("juggle") and _t > 20:
-				_gec("bitti")
+				_gec("toparlan")
 			elif _t > 200:
+				_gec("toparlan")
+
+		# Rakip ayaga kalksin, sonra Grunt yakin plani ve karsilasma karesi.
+		"toparlan":
+			if enemy.fsm.current_name in [&"Idle", &"Run"] and _t > 20:
+				_gec("grunt_idle")
+			elif _t > 260:
+				_gec("grunt_idle")
+
+		"grunt_idle":
+			# Kamera Grunt'a kayar - renk varyanti yakindan gorunsun.
+			kam.global_position = enemy.global_position + Vector2(-14.0, -88.0)
+			if _t == 30:
+				_cek("grunt_idle")
+			elif _t > 36:
+				_gec("karsilasma")
+
+		"karsilasma":
+			# Ikisi birden: uzaklas, ortaya bak, palet ayrimi okunuyor mu?
+			kam.zoom = Vector2(YAKINLIK * 0.55, YAKINLIK * 0.55)
+			kam.global_position = (player.global_position + enemy.global_position) * 0.5 + Vector2(0.0, -88.0)
+			if _t == 30:
+				_cek("karsilasma")
+			elif _t > 36:
 				_gec("bitti")
 
 		"bitti":

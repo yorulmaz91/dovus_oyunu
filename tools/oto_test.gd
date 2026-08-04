@@ -193,6 +193,16 @@ func _check_setup() -> void:
 	if rig_sprite != 15 or gradyan > 0:
 		problems.append("Lyra rig dokulari: %d sprite, %d tanesi hala gradyan (15 sprite / 0 gradyan olmali)" % [
 			rig_sprite, gradyan])
+	# Grunt de artik gercek cizim (Lyra parcalarinin renk varyanti).
+	var g_sprite := 0
+	var g_gradyan := 0
+	for s: Sprite2D in enemy.get_node("Rig").find_children("*", "Sprite2D", true, false):
+		g_sprite += 1
+		if s.texture is GradientTexture2D:
+			g_gradyan += 1
+	if g_sprite != 15 or g_gradyan > 0:
+		problems.append("Grunt rig dokulari: %d sprite, %d tanesi hala gradyan (15 sprite / 0 gradyan olmali)" % [
+			g_sprite, g_gradyan])
 
 	# Nakavt sistemi iki karakterde de "Dead" node'u olmadan calismaz.
 	for f: Fighter in [player, enemy]:

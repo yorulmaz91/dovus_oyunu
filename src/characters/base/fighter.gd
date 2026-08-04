@@ -42,9 +42,18 @@ signal combo_changed(hits: int)
 
 @export_group("Gorunum")
 @export var flash_color: Color = Color(1.0, 0.45, 0.45)
+## ORTAM DENGELEMESI: sahnenin mavi CanvasModulate'i teni yesile/griye
+## kaydiriyordu. Bu carpan onu sicak tarafa geri ceker.
+## NEREYE UYGULANIR: Rig'in ALTINDAKI Skeleton2D'nin modulate'ine.
+## Rig'in KENDI modulate'i flash tarafindan her karede eziliyor, self_modulate
+## ise Node2D kendisi cizmedigi icin cocuklara HIC gecmiyor - o yuzden ikisi
+## de kullanilamaz. Skeleton2D'nin modulate'i cocuklara gecer ve flash ile
+## carpisir (carpim), yani ikisi birlikte dogru calisir.
+@export var ortam_dengeleme: Color = Color(1.20, 1.04, 0.90)
 @export var shadow_fade_height: float = 420.0
 
 @onready var rig: Node2D = $Rig
+@onready var iskelet: Node2D = $Rig/Skeleton2D
 @onready var anim: AnimationPlayer = $AnimationPlayer
 @onready var fsm: StateMachine = $StateMachine
 @onready var input: InputSource = $InputSource
@@ -84,6 +93,8 @@ func _ready() -> void:
 	for m in moves:
 		if m != null:
 			_move_by_id[m.id] = m
+
+	iskelet.modulate = ortam_dengeleme
 
 	ground_y = global_position.y
 	# Durum makinesi BURADA baslatilir, kendi _ready()'sinde degil: Godot'ta
