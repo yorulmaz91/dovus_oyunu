@@ -24,11 +24,15 @@ func enter(msg: Dictionary = {}) -> void:
 	if not move.airborne:
 		fighter.velocity.x = move.forward_momentum * float(fighter.facing)
 	fighter.play(move.animation, true)
+	# Saldiran USTTE cizilsin: tekme rakibin arkasinda kalinca "sarilma" gibi
+	# duruyordu. YALNIZ cizim sirasi - carpisma, hitbox ve menzil etkilenmez.
+	fighter.z_index = 1
 	fighter.anim.animation_finished.connect(_on_animation_finished, CONNECT_ONE_SHOT)
 
 
 func exit() -> void:
 	fighter.deactivate_all_hitboxes()
+	fighter.z_index = 0  # her cikista sifirlanir: Hit, Juggle, Dead dahil
 	fighter.lock_facing = false
 	fighter.current_move = null
 	if fighter.anim.animation_finished.is_connected(_on_animation_finished):

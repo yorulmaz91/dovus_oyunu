@@ -108,7 +108,11 @@ texture = SubResource("Tex_shadow")
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="."]
 occluder = SubResource("Occ_body")
-occluder_light_mask = 1
+; ETKISIZ (mask 0). Karakterin kendi occluder'i KeyLight'in golge maskesine
+; girdiginde figur KENDI golgesinin icinde kaliyordu: dev piramit golgeler
+; ve karanlik karakterler. Yere baglantiyi zaten BlobShadow veriyor.
+; Dugum duruyor - ileride ihtiyac olursa mask'i 1 yapmak yeter.
+occluder_light_mask = 0
 
 [node name="Rig" type="Node2D" parent="."]
 

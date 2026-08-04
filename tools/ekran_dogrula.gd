@@ -17,7 +17,7 @@ extends Node
 
 const CIKIS := "res://build/dogrulama/"
 ## Yakin plan: 170 px'lik karakter 720 px'lik ekranda ayrinti versin.
-const YAKINLIK := 3.2
+const YAKINLIK := 2.2
 const FRAME_LIMIT: int = 900
 
 var battle: Node
@@ -58,8 +58,10 @@ func _physics_process(_delta: float) -> void:
 		return
 
 	# Kamera hep Lyra'nin govdesinde dursun (son iki faz kendi kamerasini kurar).
+	# IKI dovuscuyu birden kadrajla: havadaki rakip da tam gorunsun.
 	if phase not in ["grunt_idle", "karsilasma"]:
-		kam.global_position = player.global_position + Vector2(14.0, -88.0)
+		var orta: Vector2 = (player.global_position + enemy.global_position) * 0.5
+		kam.global_position = Vector2(orta.x, minf(orta.y, enemy.global_position.y) - 78.0)
 
 	if _tap_left > 0:
 		_tap_left -= 1
@@ -133,7 +135,7 @@ func _physics_process(_delta: float) -> void:
 
 		"karsilasma":
 			# Ikisi birden: uzaklas, ortaya bak, palet ayrimi okunuyor mu?
-			kam.zoom = Vector2(YAKINLIK * 0.55, YAKINLIK * 0.55)
+			kam.zoom = Vector2(YAKINLIK * 0.78, YAKINLIK * 0.78)
 			kam.global_position = (player.global_position + enemy.global_position) * 0.5 + Vector2(0.0, -88.0)
 			if _t == 30:
 				_cek("karsilasma")

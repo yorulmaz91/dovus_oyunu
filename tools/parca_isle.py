@@ -190,7 +190,7 @@ def _hsv_rgb(h: np.ndarray, s: np.ndarray, v: np.ndarray) -> np.ndarray:
     return np.stack([r, g, b], axis=-1)
 
 
-def grunt_varyanti(im: Image.Image):
+def grunt_varyanti(im: Image.Image, sac: bool = False):
     """Lyra parcasindan Grunt paletini uretir. SECICI: ten ve konturlara
     dokunmaz, yalniz kumas renklerini kaydirir."""
     dizi = np.asarray(im).astype(np.float32) / 255.0
@@ -225,15 +225,25 @@ def grunt_varyanti(im: Image.Image):
     # turkuaz vurgu -> turuncu-amber
     yh[turkuaz] = 30.0
 
+    # SAC BOYASI - yalniz kafa parcasinda. Sac V 0.12-0.32 bandinda; asagisi
+    # (V<0.12) kontur cizgisi, o KORUNUR. Lyra'nin siyah sacini Grunt'ta koyu
+    # kizil-kahveye cevirir; iki karakter uzaktan da ayrilsin diye.
+    sac_maske = np.zeros_like(gorunur)
+    if sac:
+        sac_maske = gorunur & (v >= 0.12) & (v <= 0.32) & ~ten
+        yh[sac_maske] = 17.0
+        ys[sac_maske] = 0.50
+        yv[sac_maske] = v[sac_maske] * 1.15
+
     yeni = _hsv_rgb(yh, ys, yv)
     yeni = np.where(gorunur[..., None], yeni, rgb)
     cikti = np.dstack([(np.clip(yeni, 0.0, 1.0) * 255.0).astype(np.uint8),
                        (a * 255.0).astype(np.uint8)])
 
     toplam = int(gorunur.sum())
-    boyanan = int((notr | haki | turkuaz).sum())
+    boyanan = int((notr | haki | turkuaz | sac_maske).sum())
     yuzde = (100.0 * boyanan / toplam) if toplam else 0.0
-    ayrinti = (int(notr.sum()), int(haki.sum()), int(turkuaz.sum()))
+    ayrinti = (int(notr.sum()), int(haki.sum()), int(turkuaz.sum()), int(sac_maske.sum()))
     return Image.fromarray(cikti, "RGBA"), yuzde, ayrinti
 
 
@@ -316,12 +326,12 @@ def main() -> None:
     print("  KORUNAN: ten (H 10-40, S>0.15) ve kontur/koyu (V<0.25)")
     print("  BOYANAN: notr kumas -> kizil-bordo | haki -> koyu bordo |")
     print("           turkuaz vurgu -> turuncu-amber")
-    print("  %-11s %9s %9s %9s %9s" % ("parca", "boyanan", "notr", "haki", "turkuaz"))
+    print("  %-11s %9s %9s %9s %9s %9s" % ("parca", "boyanan", "notr", "haki", "turkuaz", "sac"))
     for ad in PARCALAR:
         kaynak = Image.open(os.path.join(CIKIS, ad + ".png")).convert("RGBA")
-        varyant, yuzde, (n, hk, tq) = grunt_varyanti(kaynak)
+        varyant, yuzde, (n, hk, tq, sc) = grunt_varyanti(kaynak, sac=(ad == "kafa"))
         varyant.save(os.path.join(GRUNT_CIKIS, ad + ".png"))
-        print("  %-11s %8.1f%% %9d %9d %9d" % (ad, yuzde, n, hk, tq))
+        print("  %-11s %8.1f%% %9d %9d %9d %9d" % (ad, yuzde, n, hk, tq, sc))
 
     print("\n=========== BITTI ===========\n")
 

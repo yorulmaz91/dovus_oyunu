@@ -9,7 +9,7 @@
 class_name ImpactLight
 extends PointLight2D
 
-@export var flash_energy: float = 2.6
+@export var flash_energy: float = 1.8
 @export var decay: float = 9.0
 @export var offset_from_victim: Vector2 = Vector2(0.0, -60.0)
 
@@ -27,7 +27,8 @@ func _on_hit_confirmed(_attacker: Node, victim: Node, info: HitInfo) -> void:
 	if v == null:
 		return
 	global_position = v.global_position + offset_from_victim
-	energy = flash_energy * clampf(info.data.damage / 12.0, 0.5, 2.0)
+	# Ust sinir 2.0 -> 1.2: agir hamlelerde Lyra bembeyaz yaniyordu.
+	energy = flash_energy * clampf(info.data.damage / 12.0, 0.5, 1.2)
 	enabled = true
 
 
